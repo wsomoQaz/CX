@@ -1,0 +1,216 @@
+-- MyUILib.lua（全功能 + 半透明）
+local MyUILib = {}
+local UserInputService = game:GetService("UserInputService")
+
+-- 创建窗口
+function MyUILib:CreateWindow(config)
+	local player = game.Players.LocalPlayer
+	local gui = Instance.new("ScreenGui", player:WaitForChild("PlayerGui"))
+	gui.Name = config.Name or "MyUILib"
+	gui.ResetOnSpawn = false
+	gui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
+
+	local mainFrame = Instance.new("Frame", gui)
+	mainFrame.Size = UDim2.new(0, 320, 0, 420)
+	mainFrame.Position = UDim2.new(0.5, -160, 0.5, -210)
+	mainFrame.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
+	mainFrame.BackgroundTransparency = 0.5
+	mainFrame.BorderSizePixel = 0
+
+	local title = Instance.new("TextLabel", mainFrame)
+	title.Size = UDim2.new(1, 0, 0, 30)
+	title.Text = config.Title or "MyUILib GUI"
+	title.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
+	title.BackgroundTransparency = 0.5
+	title.TextColor3 = Color3.new(1, 1, 1)
+	title.TextSize = 16
+	title.Font = Enum.Font.SourceSansBold
+
+	-- 拖动窗口
+	local dragging, dragInput, dragStart, startPos
+	title.InputBegan:Connect(function(input)
+		if input.UserInputType == Enum.UserInputType.MouseButton1 then
+			dragging = true
+			dragStart = input.Position
+			startPos = mainFrame.Position
+			input.Changed:Connect(function()
+				if input.UserInputState == Enum.UserInputState.End then dragging = false end
+			end)
+		end
+	end)
+	title.InputChanged:Connect(function(input)
+		if input.UserInputType == Enum.UserInputType.MouseMovement then dragInput = input end
+	end)
+	UserInputService.InputChanged:Connect(function(input)
+		if input == dragInput and dragging then
+			local delta = input.Position - dragStart
+			mainFrame.Position = UDim2.new(startPos.X.Scale, startPos.X.Offset + delta.X,
+										   startPos.Y.Scale, startPos.Y.Offset + delta.Y)
+		end
+	end)
+
+	-- 内容区域
+	local layout = Instance.new("UIListLayout", mainFrame)
+	layout.Padding = UDim.new(0, 6)
+	layout.SortOrder = Enum.SortOrder.LayoutOrder
+
+	-- 占位使控件不重叠标题
+	local padding = Instance.new("Frame", mainFrame)
+	padding.Size = UDim2.new(1, 0, 0, 36)
+	padding.BackgroundTransparency = 1
+
+	local self = {}
+	self.Gui = gui
+	self.Main = mainFrame
+	return self
+end
+
+-- 添加标签
+function MyUILib:AddLabel(window, text)
+	local label = Instance.new("TextLabel", window.Main)
+	label.Size = UDim2.new(1, -20, 0, 24)
+	label.Position = UDim2.new(0, 10, 0, 0)
+	label.BackgroundTransparency = 1
+	label.Text = text or "标签"
+	label.TextColor3 = Color3.new(1, 1, 1)
+	label.TextSize = 14
+	label.Font = Enum.Font.SourceSans
+end
+
+-- 添加按钮
+function MyUILib:AddButton(window, text, callback)
+	local button = Instance.new("TextButton", window.Main)
+	button.Size = UDim2.new(1, -20, 0, 32)
+	button.Position = UDim2.new(0, 10, 0, 0)
+	button.Text = text or "按钮"
+	button.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
+	button.BackgroundTransparency = 0.5
+	button.TextColor3 = Color3.new(1, 1, 1)
+	button.Font = Enum.Font.SourceSans
+	button.TextSize = 14
+	button.MouseButton1Click:Connect(function()
+		if callback then callback() end
+	end)
+end
+
+-- 添加开关
+function MyUILib:AddToggle(window, text, default, callback)
+	local toggle = Instance.new("TextButton", window.Main)
+	toggle.Size = UDim2.new(1, -20, 0, 32)
+	toggle.Text = text .. ": " .. (default and "开" or "关")
+	toggle.BackgroundColor3 = Color3.fromRGB(70, 70, 70)
+	toggle.BackgroundTransparency = 0.5
+	toggle.TextColor3 = Color3.new(1, 1, 1)
+	toggle.Font = Enum.Font.SourceSans
+	toggle.TextSize = 14
+
+	local state = default
+	toggle.MouseButton1Click:Connect(function()
+		state = not state
+		toggle.Text = text .. ": " .. (state and "开" or "关")
+		if callback then callback(state) end
+	end)
+end
+
+-- 添加滑块（整数）
+function MyUILib:AddSlider(window, text, min, max, default, callback)
+	local container = Instance.new("Frame", window.Main)
+	container.Size = UDim2.new(1, -20, 0, 40)
+	container.BackgroundTransparency = 1
+
+	local label = Instance.new("TextLabel", container)
+	label.Size = UDim2.new(1, 0, 0, 20)
+	label.Text = text .. ": " .. tostring(default)
+	label.TextColor3 = Color3.new(1, 1, 1)
+	label.BackgroundTransparency = 1
+	label.Font = Enum.Font.SourceSans
+	label.TextSize = 14
+
+	local slider = Instance.new("TextButton", container)
+	slider.Size = UDim2.new(1, 0, 0, 18)
+	slider.Position = UDim2.new(0, 0, 0, 20)
+	slider.BackgroundColor3 = Color3.fromRGB(80, 80, 80)
+	slider.BackgroundTransparency = 0.5
+	slider.Text = ""
+	slider.AutoButtonColor = false
+
+	local value = default
+	slider.MouseButton1Down:Connect(function()
+		local conn
+		conn = UserInputService.InputChanged:Connect(function(input)
+			if input.UserInputType == Enum.UserInputType.MouseMovement then
+				local x = input.Position.X - slider.AbsolutePosition.X
+				local percent = math.clamp(x / slider.AbsoluteSize.X, 0, 1)
+				value = math.floor(min + (max - min) * percent + 0.5)
+				label.Text = text .. ": " .. tostring(value)
+				if callback then callback(value) end
+			end
+		end)
+		UserInputService.InputEnded:Wait()
+		conn:Disconnect()
+	end)
+end
+
+-- 添加文本框
+function MyUILib:AddTextbox(window, text, placeholder, callback)
+	local box = Instance.new("TextBox", window.Main)
+	box.Size = UDim2.new(1, -20, 0, 32)
+	box.PlaceholderText = placeholder or "请输入内容"
+	box.Text = ""
+	box.BackgroundColor3 = Color3.fromRGB(60, 60, 60)
+	box.BackgroundTransparency = 0.5
+	box.TextColor3 = Color3.new(1, 1, 1)
+	box.TextSize = 14
+	box.Font = Enum.Font.SourceSans
+
+	box.FocusLost:Connect(function(enter)
+		if enter and callback then callback(box.Text) end
+	end)
+end
+
+-- 添加下拉菜单
+function MyUILib:AddDropdown(window, text, list, callback)
+	local dropdown = Instance.new("TextButton", window.Main)
+	dropdown.Size = UDim2.new(1, -20, 0, 32)
+	dropdown.Text = text .. ": " .. list[1]
+	dropdown.BackgroundColor3 = Color3.fromRGB(60, 60, 60)
+	dropdown.BackgroundTransparency = 0.5
+	dropdown.TextColor3 = Color3.new(1, 1, 1)
+	dropdown.Font = Enum.Font.SourceSans
+	dropdown.TextSize = 14
+
+	local index = 1
+	dropdown.MouseButton1Click:Connect(function()
+		index = (index % #list) + 1
+		dropdown.Text = text .. ": " .. list[index]
+		if callback then callback(list[index]) end
+	end)
+end
+
+-- 添加按键绑定
+function MyUILib:AddKeybind(window, text, defaultKey, callback)
+	local button = Instance.new("TextButton", window.Main)
+	button.Size = UDim2.new(1, -20, 0, 32)
+	button.Text = text .. ": [" .. defaultKey.Name .. "]"
+	button.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
+	button.BackgroundTransparency = 0.5
+	button.TextColor3 = Color3.new(1, 1, 1)
+	button.Font = Enum.Font.SourceSans
+	button.TextSize = 14
+
+	local listening = false
+	button.MouseButton1Click:Connect(function()
+		button.Text = text .. ": [请按键]"
+		listening = true
+	end)
+
+	UserInputService.InputBegan:Connect(function(input, gameProcessed)
+		if not gameProcessed and listening then
+			listening = false
+			button.Text = text .. ": [" .. input.KeyCode.Name .. "]"
+			if callback then callback(input.KeyCode) end
+		end
+	end)
+end
+
+return MyUILib
