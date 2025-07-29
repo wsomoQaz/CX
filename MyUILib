@@ -1,8 +1,6 @@
--- MyUILib.lua（支持标签页 + 所有控件 + 半透明）
 local MyUILib = {}
 local UserInputService = game:GetService("UserInputService")
 
--- 创建窗口
 function MyUILib:CreateWindow(config)
 	local player = game.Players.LocalPlayer
 	local gui = Instance.new("ScreenGui", player:WaitForChild("PlayerGui"))
@@ -11,8 +9,8 @@ function MyUILib:CreateWindow(config)
 	gui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
 
 	local mainFrame = Instance.new("Frame", gui)
-	mainFrame.Size = UDim2.new(0, 360, 0, 460)
-	mainFrame.Position = UDim2.new(0.5, -180, 0.5, -230)
+	mainFrame.Size = UDim2.new(0, 400, 0, 460)
+	mainFrame.Position = UDim2.new(0.5, -200, 0.5, -230)
 	mainFrame.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
 	mainFrame.BackgroundTransparency = 0.5
 	mainFrame.BorderSizePixel = 0
@@ -49,12 +47,16 @@ function MyUILib:CreateWindow(config)
 		end
 	end)
 
-	-- 标签按钮区域
+	-- 左侧标签区域
 	local tabBar = Instance.new("Frame", mainFrame)
-	tabBar.Size = UDim2.new(1, 0, 0, 30)
+	tabBar.Size = UDim2.new(0, 90, 1, -30)
 	tabBar.Position = UDim2.new(0, 0, 0, 30)
 	tabBar.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
 	tabBar.BackgroundTransparency = 0.5
+
+	local tabLayout = Instance.new("UIListLayout", tabBar)
+	tabLayout.SortOrder = Enum.SortOrder.LayoutOrder
+	tabLayout.Padding = UDim.new(0, 4)
 
 	local tabButtons = {}
 	local tabFrames = {}
@@ -63,7 +65,7 @@ function MyUILib:CreateWindow(config)
 	-- 创建 Tab 函数
 	local function CreateTab(name)
 		local tabBtn = Instance.new("TextButton", tabBar)
-		tabBtn.Size = UDim2.new(0, 80, 1, 0)
+		tabBtn.Size = UDim2.new(1, 0, 0, 32)
 		tabBtn.Text = name
 		tabBtn.BackgroundTransparency = 0.5
 		tabBtn.BackgroundColor3 = Color3.fromRGB(70, 70, 70)
@@ -72,8 +74,8 @@ function MyUILib:CreateWindow(config)
 		tabBtn.TextSize = 14
 
 		local content = Instance.new("Frame", mainFrame)
-		content.Size = UDim2.new(1, 0, 1, -60)
-		content.Position = UDim2.new(0, 0, 0, 60)
+		content.Size = UDim2.new(1, -100, 1, -40)
+		content.Position = UDim2.new(0, 100, 0, 40)
 		content.BackgroundTransparency = 1
 		content.Visible = false
 
@@ -104,7 +106,6 @@ function MyUILib:CreateWindow(config)
 	return window
 end
 
--- 添加控件（都添加到指定 tab）
 function MyUILib:AddLabel(tab, text)
 	local label = Instance.new("TextLabel", tab)
 	label.Size = UDim2.new(1, -20, 0, 24)
