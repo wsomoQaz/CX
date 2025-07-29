@@ -1,4 +1,4 @@
--- MyUILib.lua（全功能 + 半透明）
+-- MyUILib.lua（支持标签页 + 所有控件 + 半透明）
 local MyUILib = {}
 local UserInputService = game:GetService("UserInputService")
 
@@ -11,8 +11,8 @@ function MyUILib:CreateWindow(config)
 	gui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
 
 	local mainFrame = Instance.new("Frame", gui)
-	mainFrame.Size = UDim2.new(0, 320, 0, 420)
-	mainFrame.Position = UDim2.new(0.5, -160, 0.5, -210)
+	mainFrame.Size = UDim2.new(0, 360, 0, 460)
+	mainFrame.Position = UDim2.new(0.5, -180, 0.5, -230)
 	mainFrame.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
 	mainFrame.BackgroundTransparency = 0.5
 	mainFrame.BorderSizePixel = 0
@@ -26,7 +26,7 @@ function MyUILib:CreateWindow(config)
 	title.TextSize = 16
 	title.Font = Enum.Font.SourceSansBold
 
-	-- 拖动窗口
+	-- 拖动
 	local dragging, dragInput, dragStart, startPos
 	title.InputBegan:Connect(function(input)
 		if input.UserInputType == Enum.UserInputType.MouseButton1 then
@@ -49,25 +49,64 @@ function MyUILib:CreateWindow(config)
 		end
 	end)
 
-	-- 内容区域
-	local layout = Instance.new("UIListLayout", mainFrame)
-	layout.Padding = UDim.new(0, 6)
-	layout.SortOrder = Enum.SortOrder.LayoutOrder
+	-- 标签按钮区域
+	local tabBar = Instance.new("Frame", mainFrame)
+	tabBar.Size = UDim2.new(1, 0, 0, 30)
+	tabBar.Position = UDim2.new(0, 0, 0, 30)
+	tabBar.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
+	tabBar.BackgroundTransparency = 0.5
 
-	-- 占位使控件不重叠标题
-	local padding = Instance.new("Frame", mainFrame)
-	padding.Size = UDim2.new(1, 0, 0, 36)
-	padding.BackgroundTransparency = 1
+	local tabButtons = {}
+	local tabFrames = {}
+	local currentTab = nil
 
-	local self = {}
-	self.Gui = gui
-	self.Main = mainFrame
-	return self
+	-- 创建 Tab 函数
+	local function CreateTab(name)
+		local tabBtn = Instance.new("TextButton", tabBar)
+		tabBtn.Size = UDim2.new(0, 80, 1, 0)
+		tabBtn.Text = name
+		tabBtn.BackgroundTransparency = 0.5
+		tabBtn.BackgroundColor3 = Color3.fromRGB(70, 70, 70)
+		tabBtn.TextColor3 = Color3.new(1, 1, 1)
+		tabBtn.Font = Enum.Font.SourceSans
+		tabBtn.TextSize = 14
+
+		local content = Instance.new("Frame", mainFrame)
+		content.Size = UDim2.new(1, 0, 1, -60)
+		content.Position = UDim2.new(0, 0, 0, 60)
+		content.BackgroundTransparency = 1
+		content.Visible = false
+
+		local layout = Instance.new("UIListLayout", content)
+		layout.Padding = UDim.new(0, 6)
+		layout.SortOrder = Enum.SortOrder.LayoutOrder
+
+		tabBtn.MouseButton1Click:Connect(function()
+			for _, f in pairs(tabFrames) do f.Visible = false end
+			content.Visible = true
+			currentTab = content
+		end)
+
+		table.insert(tabButtons, tabBtn)
+		table.insert(tabFrames, content)
+
+		if not currentTab then
+			content.Visible = true
+			currentTab = content
+		end
+
+		return content
+	end
+
+	local window = {}
+	window.Main = mainFrame
+	window.CreateTab = CreateTab
+	return window
 end
 
--- 添加标签
-function MyUILib:AddLabel(window, text)
-	local label = Instance.new("TextLabel", window.Main)
+-- 添加控件（都添加到指定 tab）
+function MyUILib:AddLabel(tab, text)
+	local label = Instance.new("TextLabel", tab)
 	label.Size = UDim2.new(1, -20, 0, 24)
 	label.Position = UDim2.new(0, 10, 0, 0)
 	label.BackgroundTransparency = 1
@@ -77,25 +116,21 @@ function MyUILib:AddLabel(window, text)
 	label.Font = Enum.Font.SourceSans
 end
 
--- 添加按钮
-function MyUILib:AddButton(window, text, callback)
-	local button = Instance.new("TextButton", window.Main)
-	button.Size = UDim2.new(1, -20, 0, 32)
-	button.Position = UDim2.new(0, 10, 0, 0)
-	button.Text = text or "按钮"
-	button.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
-	button.BackgroundTransparency = 0.5
-	button.TextColor3 = Color3.new(1, 1, 1)
-	button.Font = Enum.Font.SourceSans
-	button.TextSize = 14
-	button.MouseButton1Click:Connect(function()
-		if callback then callback() end
-	end)
+function MyUILib:AddButton(tab, text, callback)
+	local btn = Instance.new("TextButton", tab)
+	btn.Size = UDim2.new(1, -20, 0, 32)
+	btn.Position = UDim2.new(0, 10, 0, 0)
+	btn.Text = text or "按钮"
+	btn.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
+	btn.BackgroundTransparency = 0.5
+	btn.TextColor3 = Color3.new(1, 1, 1)
+	btn.Font = Enum.Font.SourceSans
+	btn.TextSize = 14
+	btn.MouseButton1Click:Connect(function() if callback then callback() end end)
 end
 
--- 添加开关
-function MyUILib:AddToggle(window, text, default, callback)
-	local toggle = Instance.new("TextButton", window.Main)
+function MyUILib:AddToggle(tab, text, default, callback)
+	local toggle = Instance.new("TextButton", tab)
 	toggle.Size = UDim2.new(1, -20, 0, 32)
 	toggle.Text = text .. ": " .. (default and "开" or "关")
 	toggle.BackgroundColor3 = Color3.fromRGB(70, 70, 70)
@@ -112,13 +147,12 @@ function MyUILib:AddToggle(window, text, default, callback)
 	end)
 end
 
--- 添加滑块（整数）
-function MyUILib:AddSlider(window, text, min, max, default, callback)
-	local container = Instance.new("Frame", window.Main)
-	container.Size = UDim2.new(1, -20, 0, 40)
-	container.BackgroundTransparency = 1
+function MyUILib:AddSlider(tab, text, min, max, default, callback)
+	local frame = Instance.new("Frame", tab)
+	frame.Size = UDim2.new(1, -20, 0, 40)
+	frame.BackgroundTransparency = 1
 
-	local label = Instance.new("TextLabel", container)
+	local label = Instance.new("TextLabel", frame)
 	label.Size = UDim2.new(1, 0, 0, 20)
 	label.Text = text .. ": " .. tostring(default)
 	label.TextColor3 = Color3.new(1, 1, 1)
@@ -126,13 +160,12 @@ function MyUILib:AddSlider(window, text, min, max, default, callback)
 	label.Font = Enum.Font.SourceSans
 	label.TextSize = 14
 
-	local slider = Instance.new("TextButton", container)
+	local slider = Instance.new("TextButton", frame)
 	slider.Size = UDim2.new(1, 0, 0, 18)
 	slider.Position = UDim2.new(0, 0, 0, 20)
 	slider.BackgroundColor3 = Color3.fromRGB(80, 80, 80)
 	slider.BackgroundTransparency = 0.5
 	slider.Text = ""
-	slider.AutoButtonColor = false
 
 	local value = default
 	slider.MouseButton1Down:Connect(function()
@@ -151,11 +184,10 @@ function MyUILib:AddSlider(window, text, min, max, default, callback)
 	end)
 end
 
--- 添加文本框
-function MyUILib:AddTextbox(window, text, placeholder, callback)
-	local box = Instance.new("TextBox", window.Main)
+function MyUILib:AddTextbox(tab, placeholder, callback)
+	local box = Instance.new("TextBox", tab)
 	box.Size = UDim2.new(1, -20, 0, 32)
-	box.PlaceholderText = placeholder or "请输入内容"
+	box.PlaceholderText = placeholder or "请输入文字"
 	box.Text = ""
 	box.BackgroundColor3 = Color3.fromRGB(60, 60, 60)
 	box.BackgroundTransparency = 0.5
@@ -168,9 +200,8 @@ function MyUILib:AddTextbox(window, text, placeholder, callback)
 	end)
 end
 
--- 添加下拉菜单
-function MyUILib:AddDropdown(window, text, list, callback)
-	local dropdown = Instance.new("TextButton", window.Main)
+function MyUILib:AddDropdown(tab, text, list, callback)
+	local dropdown = Instance.new("TextButton", tab)
 	dropdown.Size = UDim2.new(1, -20, 0, 32)
 	dropdown.Text = text .. ": " .. list[1]
 	dropdown.BackgroundColor3 = Color3.fromRGB(60, 60, 60)
@@ -187,27 +218,26 @@ function MyUILib:AddDropdown(window, text, list, callback)
 	end)
 end
 
--- 添加按键绑定
-function MyUILib:AddKeybind(window, text, defaultKey, callback)
-	local button = Instance.new("TextButton", window.Main)
-	button.Size = UDim2.new(1, -20, 0, 32)
-	button.Text = text .. ": [" .. defaultKey.Name .. "]"
-	button.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
-	button.BackgroundTransparency = 0.5
-	button.TextColor3 = Color3.new(1, 1, 1)
-	button.Font = Enum.Font.SourceSans
-	button.TextSize = 14
+function MyUILib:AddKeybind(tab, text, defaultKey, callback)
+	local btn = Instance.new("TextButton", tab)
+	btn.Size = UDim2.new(1, -20, 0, 32)
+	btn.Text = text .. ": [" .. defaultKey.Name .. "]"
+	btn.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
+	btn.BackgroundTransparency = 0.5
+	btn.TextColor3 = Color3.new(1, 1, 1)
+	btn.Font = Enum.Font.SourceSans
+	btn.TextSize = 14
 
 	local listening = false
-	button.MouseButton1Click:Connect(function()
-		button.Text = text .. ": [请按键]"
+	btn.MouseButton1Click:Connect(function()
+		btn.Text = text .. ": [按下按键]"
 		listening = true
 	end)
 
 	UserInputService.InputBegan:Connect(function(input, gameProcessed)
 		if not gameProcessed and listening then
 			listening = false
-			button.Text = text .. ": [" .. input.KeyCode.Name .. "]"
+			btn.Text = text .. ": [" .. input.KeyCode.Name .. "]"
 			if callback then callback(input.KeyCode) end
 		end
 	end)
