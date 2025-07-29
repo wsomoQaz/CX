@@ -1,6 +1,8 @@
+-- MyUILib.lua（半透明+左侧选卡版）
 local MyUILib = {}
 local UserInputService = game:GetService("UserInputService")
 
+-- 创建窗口（含左侧Tab）
 function MyUILib:CreateWindow(config)
 	local player = game.Players.LocalPlayer
 	local gui = Instance.new("ScreenGui", player:WaitForChild("PlayerGui"))
@@ -9,39 +11,23 @@ function MyUILib:CreateWindow(config)
 	gui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
 
 	local mainFrame = Instance.new("Frame", gui)
-	mainFrame.Size = UDim2.new(0, 600, 0, 460)
-	mainFrame.Position = UDim2.new(0.5, -300, 0.5, -230)
+	mainFrame.Size = UDim2.new(0, 420, 0, 420)
+	mainFrame.Position = UDim2.new(0.5, -210, 0.5, -210)
 	mainFrame.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
 	mainFrame.BackgroundTransparency = 0.5
 	mainFrame.BorderSizePixel = 0
 
+	-- 标题栏
 	local title = Instance.new("TextLabel", mainFrame)
 	title.Size = UDim2.new(1, 0, 0, 30)
-	title.Text = config.Title or "MyUILib 控制面板"
+	title.Text = config.Title or "MyUILib GUI"
 	title.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
 	title.BackgroundTransparency = 0.5
 	title.TextColor3 = Color3.new(1, 1, 1)
 	title.TextSize = 16
 	title.Font = Enum.Font.SourceSansBold
-	title.TextXAlignment = Enum.TextXAlignment.Left
-	title.PaddingLeft = UDim.new(0, 8)
 
-	-- 关闭按钮
-	local closeBtn = Instance.new("TextButton", mainFrame)
-	closeBtn.Size = UDim2.new(0, 30, 0, 30)
-	closeBtn.Position = UDim2.new(1, -30, 0, 0)
-	closeBtn.Text = "X"
-	closeBtn.TextColor3 = Color3.new(1, 1, 1)
-	closeBtn.BackgroundTransparency = 1
-	closeBtn.Font = Enum.Font.SourceSansBold
-	closeBtn.TextSize = 16
-	closeBtn.ZIndex = 2
-
-	closeBtn.MouseButton1Click:Connect(function()
-		mainFrame.Visible = not mainFrame.Visible
-	end)
-
-	-- 拖动
+	-- 拖动窗口功能
 	local dragging, dragInput, dragStart, startPos
 	title.InputBegan:Connect(function(input)
 		if input.UserInputType == Enum.UserInputType.MouseButton1 then
@@ -64,202 +50,222 @@ function MyUILib:CreateWindow(config)
 		end
 	end)
 
-	-- 左侧标签栏（占 30%）
+	-- 左侧Tab按钮栏
 	local tabBar = Instance.new("Frame", mainFrame)
-	tabBar.Size = UDim2.new(0.3, 0, 1, -30)
+	tabBar.Size = UDim2.new(0, 100, 1, -30)
 	tabBar.Position = UDim2.new(0, 0, 0, 30)
-	tabBar.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
+	tabBar.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
 	tabBar.BackgroundTransparency = 0.5
 
-	local tabLayout = Instance.new("UIListLayout", tabBar)
-	tabLayout.SortOrder = Enum.SortOrder.LayoutOrder
-	tabLayout.Padding = UDim.new(0, 4)
+	local tabList = Instance.new("UIListLayout", tabBar)
+	tabList.SortOrder = Enum.SortOrder.LayoutOrder
+	tabList.Padding = UDim.new(0, 4)
 
-	local tabButtons = {}
-	local tabFrames = {}
-	local currentTab = nil
+	-- 右侧内容区容器
+	local pagesContainer = Instance.new("Frame", mainFrame)
+	pagesContainer.Size = UDim2.new(1, -100, 1, -30)
+	pagesContainer.Position = UDim2.new(0, 100, 0, 30)
+	pagesContainer.BackgroundTransparency = 1
 
-	-- 创建 Tab 函数
-	local function CreateTab(name)
-		local tabBtn = Instance.new("TextButton", tabBar)
-		tabBtn.Size = UDim2.new(1, 0, 0, 32)
-		tabBtn.Text = name
-		tabBtn.BackgroundTransparency = 0.5
-		tabBtn.BackgroundColor3 = Color3.fromRGB(70, 70, 70)
-		tabBtn.TextColor3 = Color3.new(1, 1, 1)
-		tabBtn.Font = Enum.Font.SourceSans
-		tabBtn.TextSize = 14
+	local self = {}
+	self.Gui = gui
+	self.Main = mainFrame
+	self.TabBar = tabBar
+	self.Pages = {}
+	self.PagesContainer = pagesContainer
+	self.CurrentPage = nil
 
-		local content = Instance.new("Frame", mainFrame)
-		content.Size = UDim2.new(0.7, -10, 1, -40)
-		content.Position = UDim2.new(0.3, 10, 0, 40)
-		content.BackgroundTransparency = 1
-		content.Visible = false
+	-- 添加Tab函数，返回对应页面容器
+	function self:AddTab(name)
+		local button = Instance.new("TextButton", tabBar)
+		button.Size = UDim2.new(1, -8, 0, 28)
+		button.Text = name
+		button.BackgroundColor3 = Color3.fromRGB(60, 60, 60)
+		button.BackgroundTransparency = 0.5
+		button.TextColor3 = Color3.new(1, 1, 1)
+		button.TextSize = 14
+		button.Font = Enum.Font.SourceSans
 
-		local layout = Instance.new("UIListLayout", content)
+		local page = Instance.new("Frame", pagesContainer)
+		page.Size = UDim2.new(1, 0, 1, 0)
+		page.BackgroundTransparency = 1
+		page.Visible = false
+
+		local layout = Instance.new("UIListLayout", page)
 		layout.Padding = UDim.new(0, 6)
 		layout.SortOrder = Enum.SortOrder.LayoutOrder
 
-		tabBtn.MouseButton1Click:Connect(function()
-			for _, f in pairs(tabFrames) do f.Visible = false end
-			content.Visible = true
-			currentTab = content
+		local padding = Instance.new("Frame", page)
+		padding.Size = UDim2.new(1, 0, 0, 4)
+		padding.BackgroundTransparency = 1
+
+		self.Pages[name] = page
+
+		button.MouseButton1Click:Connect(function()
+			for _, p in pairs(self.Pages) do p.Visible = false end
+			page.Visible = true
+			self.CurrentPage = page
+			-- 高亮选中Tab
+			for _, btn in pairs(tabBar:GetChildren()) do
+				if btn:IsA("TextButton") then
+					btn.BackgroundColor3 = Color3.fromRGB(60,60,60)
+				end
+			end
+			button.BackgroundColor3 = Color3.fromRGB(80,80,80)
 		end)
 
-		table.insert(tabButtons, tabBtn)
-		table.insert(tabFrames, content)
-
-		if not currentTab then
-			content.Visible = true
-			currentTab = content
+		-- 第一个Tab默认激活
+		if not self.CurrentPage then
+			page.Visible = true
+			self.CurrentPage = page
+			button.BackgroundColor3 = Color3.fromRGB(80, 80, 80)
 		end
 
-		return content
+		return page
 	end
 
-	local window = {}
-	window.Main = mainFrame
-	window.CreateTab = CreateTab
-	return window
-end
+	-- 以下控件创建函数均传入page作为父对象
 
--- ↓ 所有控件与之前一致 ↓
-function MyUILib:AddLabel(tab, text)
-	local label = Instance.new("TextLabel", tab)
-	label.Size = UDim2.new(1, -20, 0, 24)
-	label.Position = UDim2.new(0, 10, 0, 0)
-	label.BackgroundTransparency = 1
-	label.Text = text or "标签"
-	label.TextColor3 = Color3.new(1, 1, 1)
-	label.TextSize = 14
-	label.Font = Enum.Font.SourceSans
-end
+	function self:AddLabel(page, text)
+		local label = Instance.new("TextLabel", page)
+		label.Size = UDim2.new(1, -10, 0, 24)
+		label.BackgroundTransparency = 1
+		label.Text = text or "标签"
+		label.TextColor3 = Color3.new(1, 1, 1)
+		label.TextSize = 14
+		label.Font = Enum.Font.SourceSans
+	end
 
-function MyUILib:AddButton(tab, text, callback)
-	local btn = Instance.new("TextButton", tab)
-	btn.Size = UDim2.new(1, -20, 0, 32)
-	btn.Position = UDim2.new(0, 10, 0, 0)
-	btn.Text = text or "按钮"
-	btn.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
-	btn.BackgroundTransparency = 0.5
-	btn.TextColor3 = Color3.new(1, 1, 1)
-	btn.Font = Enum.Font.SourceSans
-	btn.TextSize = 14
-	btn.MouseButton1Click:Connect(function() if callback then callback() end end)
-end
+	function self:AddButton(page, text, callback)
+		local btn = Instance.new("TextButton", page)
+		btn.Size = UDim2.new(1, -10, 0, 32)
+		btn.Text = text or "按钮"
+		btn.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
+		btn.BackgroundTransparency = 0.5
+		btn.TextColor3 = Color3.new(1, 1, 1)
+		btn.TextSize = 14
+		btn.Font = Enum.Font.SourceSans
+		btn.MouseButton1Click:Connect(function()
+			if callback then callback() end
+		end)
+	end
 
-function MyUILib:AddToggle(tab, text, default, callback)
-	local toggle = Instance.new("TextButton", tab)
-	toggle.Size = UDim2.new(1, -20, 0, 32)
-	toggle.Text = text .. ": " .. (default and "开" or "关")
-	toggle.BackgroundColor3 = Color3.fromRGB(70, 70, 70)
-	toggle.BackgroundTransparency = 0.5
-	toggle.TextColor3 = Color3.new(1, 1, 1)
-	toggle.Font = Enum.Font.SourceSans
-	toggle.TextSize = 14
+	function self:AddToggle(page, text, default, callback)
+		local toggle = Instance.new("TextButton", page)
+		toggle.Size = UDim2.new(1, -10, 0, 32)
+		toggle.Text = text .. ": " .. (default and "开" or "关")
+		toggle.BackgroundColor3 = Color3.fromRGB(70, 70, 70)
+		toggle.BackgroundTransparency = 0.5
+		toggle.TextColor3 = Color3.new(1, 1, 1)
+		toggle.TextSize = 14
+		toggle.Font = Enum.Font.SourceSans
 
-	local state = default
-	toggle.MouseButton1Click:Connect(function()
-		state = not state
-		toggle.Text = text .. ": " .. (state and "开" or "关")
-		if callback then callback(state) end
-	end)
-end
+		local state = default
+		toggle.MouseButton1Click:Connect(function()
+			state = not state
+			toggle.Text = text .. ": " .. (state and "开" or "关")
+			if callback then callback(state) end
+		end)
+	end
 
-function MyUILib:AddSlider(tab, text, min, max, default, callback)
-	local frame = Instance.new("Frame", tab)
-	frame.Size = UDim2.new(1, -20, 0, 40)
-	frame.BackgroundTransparency = 1
+	function self:AddSlider(page, text, min, max, default, callback)
+		local container = Instance.new("Frame", page)
+		container.Size = UDim2.new(1, -10, 0, 40)
+		container.BackgroundTransparency = 1
 
-	local label = Instance.new("TextLabel", frame)
-	label.Size = UDim2.new(1, 0, 0, 20)
-	label.Text = text .. ": " .. tostring(default)
-	label.TextColor3 = Color3.new(1, 1, 1)
-	label.BackgroundTransparency = 1
-	label.Font = Enum.Font.SourceSans
-	label.TextSize = 14
+		local label = Instance.new("TextLabel", container)
+		label.Size = UDim2.new(1, 0, 0, 20)
+		label.Text = text .. ": " .. tostring(default)
+		label.TextColor3 = Color3.new(1, 1, 1)
+		label.BackgroundTransparency = 1
+		label.Font = Enum.Font.SourceSans
+		label.TextSize = 14
 
-	local slider = Instance.new("TextButton", frame)
-	slider.Size = UDim2.new(1, 0, 0, 18)
-	slider.Position = UDim2.new(0, 0, 0, 20)
-	slider.BackgroundColor3 = Color3.fromRGB(80, 80, 80)
-	slider.BackgroundTransparency = 0.5
-	slider.Text = ""
+		local slider = Instance.new("TextButton", container)
+		slider.Size = UDim2.new(1, 0, 0, 18)
+		slider.Position = UDim2.new(0, 0, 0, 20)
+		slider.BackgroundColor3 = Color3.fromRGB(80, 80, 80)
+		slider.BackgroundTransparency = 0.5
+		slider.Text = ""
+		slider.AutoButtonColor = false
 
-	local value = default
-	slider.MouseButton1Down:Connect(function()
-		local conn
-		conn = UserInputService.InputChanged:Connect(function(input)
-			if input.UserInputType == Enum.UserInputType.MouseMovement then
-				local x = input.Position.X - slider.AbsolutePosition.X
-				local percent = math.clamp(x / slider.AbsoluteSize.X, 0, 1)
-				value = math.floor(min + (max - min) * percent + 0.5)
-				label.Text = text .. ": " .. tostring(value)
-				if callback then callback(value) end
+		local value = default
+		slider.MouseButton1Down:Connect(function()
+			local conn
+			conn = UserInputService.InputChanged:Connect(function(input)
+				if input.UserInputType == Enum.UserInputType.MouseMovement then
+					local x = input.Position.X - slider.AbsolutePosition.X
+					local percent = math.clamp(x / slider.AbsoluteSize.X, 0, 1)
+					value = math.floor(min + (max - min) * percent + 0.5)
+					label.Text = text .. ": " .. tostring(value)
+					if callback then callback(value) end
+				end
+			end)
+			UserInputService.InputEnded:Wait()
+			conn:Disconnect()
+		end)
+	end
+
+	function self:AddTextbox(page, text, placeholder, callback)
+		local box = Instance.new("TextBox", page)
+		box.Size = UDim2.new(1, -10, 0, 32)
+		box.PlaceholderText = placeholder or "请输入内容"
+		box.Text = ""
+		box.BackgroundColor3 = Color3.fromRGB(60, 60, 60)
+		box.BackgroundTransparency = 0.5
+		box.TextColor3 = Color3.new(1, 1, 1)
+		box.TextSize = 14
+		box.Font = Enum.Font.SourceSans
+
+		box.FocusLost:Connect(function(enter)
+			if enter and callback then callback(box.Text) end
+		end)
+	end
+
+	function self:AddDropdown(page, text, list, callback)
+		local dropdown = Instance.new("TextButton", page)
+		dropdown.Size = UDim2.new(1, -10, 0, 32)
+		dropdown.Text = text .. ": " .. list[1]
+		dropdown.BackgroundColor3 = Color3.fromRGB(60, 60, 60)
+		dropdown.BackgroundTransparency = 0.5
+		dropdown.TextColor3 = Color3.new(1, 1, 1)
+		dropdown.TextSize = 14
+		dropdown.Font = Enum.Font.SourceSans
+
+		local index = 1
+		dropdown.MouseButton1Click:Connect(function()
+			index = (index % #list) + 1
+			dropdown.Text = text .. ": " .. list[index]
+			if callback then callback(list[index]) end
+		end)
+	end
+
+	function self:AddKeybind(page, text, defaultKey, callback)
+		local button = Instance.new("TextButton", page)
+		button.Size = UDim2.new(1, -10, 0, 32)
+		button.Text = text .. ": [" .. defaultKey.Name .. "]"
+		button.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
+		button.BackgroundTransparency = 0.5
+		button.TextColor3 = Color3.new(1, 1, 1)
+		button.TextSize = 14
+		button.Font = Enum.Font.SourceSans
+
+		local listening = false
+		button.MouseButton1Click:Connect(function()
+			button.Text = text .. ": [请按键]"
+			listening = true
+		end)
+
+		UserInputService.InputBegan:Connect(function(input, gameProcessed)
+			if not gameProcessed and listening then
+				listening = false
+				button.Text = text .. ": [" .. input.KeyCode.Name .. "]"
+				if callback then callback(input.KeyCode) end
 			end
 		end)
-		UserInputService.InputEnded:Wait()
-		conn:Disconnect()
-	end)
-end
+	end
 
-function MyUILib:AddTextbox(tab, placeholder, callback)
-	local box = Instance.new("TextBox", tab)
-	box.Size = UDim2.new(1, -20, 0, 32)
-	box.PlaceholderText = placeholder or "请输入文字"
-	box.Text = ""
-	box.BackgroundColor3 = Color3.fromRGB(60, 60, 60)
-	box.BackgroundTransparency = 0.5
-	box.TextColor3 = Color3.new(1, 1, 1)
-	box.TextSize = 14
-	box.Font = Enum.Font.SourceSans
-
-	box.FocusLost:Connect(function(enter)
-		if enter and callback then callback(box.Text) end
-	end)
-end
-
-function MyUILib:AddDropdown(tab, text, list, callback)
-	local dropdown = Instance.new("TextButton", tab)
-	dropdown.Size = UDim2.new(1, -20, 0, 32)
-	dropdown.Text = text .. ": " .. list[1]
-	dropdown.BackgroundColor3 = Color3.fromRGB(60, 60, 60)
-	dropdown.BackgroundTransparency = 0.5
-	dropdown.TextColor3 = Color3.new(1, 1, 1)
-	dropdown.Font = Enum.Font.SourceSans
-	dropdown.TextSize = 14
-
-	local index = 1
-	dropdown.MouseButton1Click:Connect(function()
-		index = (index % #list) + 1
-		dropdown.Text = text .. ": " .. list[index]
-		if callback then callback(list[index]) end
-	end)
-end
-
-function MyUILib:AddKeybind(tab, text, defaultKey, callback)
-	local btn = Instance.new("TextButton", tab)
-	btn.Size = UDim2.new(1, -20, 0, 32)
-	btn.Text = text .. ": [" .. defaultKey.Name .. "]"
-	btn.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
-	btn.BackgroundTransparency = 0.5
-	btn.TextColor3 = Color3.new(1, 1, 1)
-	btn.Font = Enum.Font.SourceSans
-	btn.TextSize = 14
-
-	local listening = false
-	btn.MouseButton1Click:Connect(function()
-		btn.Text = text .. ": [按下按键]"
-		listening = true
-	end)
-
-	UserInputService.InputBegan:Connect(function(input, gameProcessed)
-		if not gameProcessed and listening then
-			listening = false
-			btn.Text = text .. ": [" .. input.KeyCode.Name .. "]"
-			if callback then callback(input.KeyCode) end
-		end
-	end)
+	return self
 end
 
 return MyUILib
