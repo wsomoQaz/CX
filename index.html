@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <title>科幻世界</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: 'Segoe UI', sans-serif;
+      background: radial-gradient(ellipse at bottom, #0d1b2a 0%, #000000 100%);
+      color: #00ffff;
+      overflow: hidden;
+    }
+
+    .stars {
+      width: 100%;
+      height: 100%;
+      background: transparent;
+      position: fixed;
+      top: 0;
+      left: 0;
+      z-index: 0;
+      background: url('https://i.imgur.com/oScKJhS.png') repeat;
+      animation: moveStars 100s linear infinite;
+    }
+
+    @keyframes moveStars {
+      from { background-position: 0 0; }
+      to { background-position: -10000px 10000px; }
+    }
+
+    .container {
+      position: relative;
+      z-index: 1;
+      padding: 60px;
+      text-align: center;
+    }
+
+    h1 {
+      font-size: 48px;
+      text-shadow: 0 0 10px #00ffff;
+    }
+
+    p {
+      font-size: 18px;
+      max-width: 600px;
+      margin: 20px auto;
+    }
+
+    button {
+      padding: 12px 24px;
+      font-size: 18px;
+      background: #00ffff;
+      border: none;
+      color: #000;
+      cursor: pointer;
+      border-radius: 5px;
+      box-shadow: 0 0 10px #00ffff;
+      transition: all 0.3s;
+    }
+
+    button:hover {
+      background: #0ff;
+      box-shadow: 0 0 20px #0ff;
+    }
+  </style>
+</head>
+<body>
+  <div class="stars"></div>
+
+  <div class="container">
+    <h1 id="titleText"></h1>
+    <p id="mainText">欢迎来到星际探索者平台。我们即将揭开宇宙的神秘面纱。</p>
+    <button onclick="explore()">开始探索</button>
+  </div>
+
+  <script>
+    const title = "欢迎来到科幻世界";
+    let i = 0;
+
+    function typeWriter() {
+      if (i < title.length) {
+        document.getElementById("titleText").innerHTML += title.charAt(i);
+        i++;
+        setTimeout(typeWriter, 100);
+      }
+    }
+
+    function explore() {
+      document.getElementById("mainText").innerHTML =
+        "你已启动探索计划，扫描中……<br><br>🔹 星际坐标：X-928 Y-47 Z-1024<br>🔹 发现未知信号源，等级：Ω<br>🔹 建议：派遣无人机侦测";
+    }
+
+    window.onload = typeWriter;
+  </script>
+</body>
+</html>
