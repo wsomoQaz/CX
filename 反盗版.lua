@@ -1,7 +1,7 @@
 local Players = game:GetService("Players")
 local LocalPlayer = Players.LocalPlayer
 
-local 正版链接 = "https://raw.githubusercontent.com/infyiff/backup/main/dex.lua"
+local 正版链接 = "https://raw.githubusercontent.com/wsomoQaz/CX/main/反盗版.lua"
 local 原始HttpGet = game.HttpGet or game.HttpGetAsync
 
 game.HttpGet = function(self, url, ...)
