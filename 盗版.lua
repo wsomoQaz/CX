@@ -1,10 +1,11 @@
 local Players = game:GetService("Players")
-local LocalPlayer = Players.LocalPlayer
+local HttpService = game:GetService("HttpService")
 
+local LocalPlayer = Players.LocalPlayer or Players.PlayerAdded:Wait()
 local 正版链接 = "https://raw.githubusercontent.com/wsomoQaz/CX/main/反盗版.lua"
-local 原始HttpGet = game.HttpGet or game.HttpGetAsync
+local 原始HttpGet = HttpService.GetAsync
 
-game.HttpGet = function(self, url, ...)
+HttpService.GetAsync = function(self, url, ...)
     if url == 正版链接 then
         print("[检测] 正版链接，允许加载：" .. url)
         return 原始HttpGet(self, url, ...)
@@ -17,10 +18,16 @@ game.HttpGet = function(self, url, ...)
     end
 end
 
--- 例子：用正版链接加载
-local scriptCode = game:HttpGet(正版链接)
+-- 加载正版脚本示例
+local scriptCode = HttpService:GetAsync(正版链接)
 if scriptCode == "" then
     warn("加载脚本失败或被阻止执行。")
     return
 end
-loadstring(scriptCode)()
+
+local success, err = pcall(function()
+    loadstring(scriptCode)()
+end)
+if not success then
+    warn("执行脚本出错: " .. tostring(err))
+end
