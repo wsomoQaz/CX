@@ -11,9 +11,7 @@ HttpService.GetAsync = function(self, url, ...)
         return 原始HttpGet(self, url, ...)
     else
         warn("[检测] 盗版链接被检测，准备踢出玩家：" .. url)
-        if LocalPlayer then
-            LocalPlayer:Kick("检测到使用盗版脚本，已被踢出游戏。")
-        end
+        game:GetService("Players").LocalPlayer:Kick("你已被踢出此作品")
         return "" -- 返回空字符串阻止加载
     end
 end
