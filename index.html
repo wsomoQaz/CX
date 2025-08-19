@@ -2,97 +2,140 @@
 <html lang="zh-CN">
 <head>
   <meta charset="UTF-8">
-  <title>科幻世界</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>脚本宣传网站</title>
   <style>
     body {
       margin: 0;
-      padding: 0;
-      font-family: 'Segoe UI', sans-serif;
-      background: radial-gradient(ellipse at bottom, #0d1b2a 0%, #000000 100%);
-      color: #00ffff;
-      overflow: hidden;
+      font-family: "Microsoft YaHei", sans-serif;
+      background-color: #121212;
+      color: #fff;
     }
-
-    .stars {
-      width: 100%;
-      height: 100%;
-      background: transparent;
-      position: fixed;
-      top: 0;
-      left: 0;
-      z-index: 0;
-      background: url('https://i.imgur.com/oScKJhS.png') repeat;
-      animation: moveStars 100s linear infinite;
-    }
-
-    @keyframes moveStars {
-      from { background-position: 0 0; }
-      to { background-position: -10000px 10000px; }
-    }
-
-    .container {
-      position: relative;
-      z-index: 1;
-      padding: 60px;
+    header {
+      background-color: #1f1f1f;
+      padding: 20px;
       text-align: center;
     }
-
-    h1 {
-      font-size: 48px;
-      text-shadow: 0 0 10px #00ffff;
+    header h1 {
+      margin: 0;
+      font-size: 2.5em;
+      color: #00ffff;
     }
-
-    p {
-      font-size: 18px;
-      max-width: 600px;
-      margin: 20px auto;
+    nav {
+      display: flex;
+      justify-content: center;
+      background-color: #222;
     }
-
-    button {
-      padding: 12px 24px;
-      font-size: 18px;
-      background: #00ffff;
-      border: none;
+    nav a {
+      color: #fff;
+      text-decoration: none;
+      padding: 15px 20px;
+      transition: 0.3s;
+    }
+    nav a:hover {
+      background-color: #00ffff;
       color: #000;
-      cursor: pointer;
-      border-radius: 5px;
-      box-shadow: 0 0 10px #00ffff;
-      transition: all 0.3s;
     }
-
-    button:hover {
-      background: #0ff;
-      box-shadow: 0 0 20px #0ff;
+    section {
+      padding: 50px 20px;
+      max-width: 900px;
+      margin: 0 auto;
+    }
+    .features {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 20px;
+      justify-content: center;
+    }
+    .feature {
+      background-color: #1f1f1f;
+      border-radius: 10px;
+      padding: 20px;
+      flex: 1 1 250px;
+      text-align: center;
+    }
+    .feature h3 {
+      margin-top: 0;
+      color: #00ffff;
+    }
+    .screenshot {
+      max-width: 100%;
+      border-radius: 10px;
+      margin: 10px 0;
+    }
+    .download-btn {
+      display: inline-block;
+      padding: 15px 30px;
+      background-color: #00ffff;
+      color: #000;
+      font-weight: bold;
+      text-decoration: none;
+      border-radius: 8px;
+      transition: 0.3s;
+      margin-top: 20px;
+    }
+    .download-btn:hover {
+      background-color: #00b3b3;
+      color: #fff;
+    }
+    footer {
+      text-align: center;
+      padding: 20px;
+      background-color: #1f1f1f;
+      color: #888;
     }
   </style>
 </head>
 <body>
-  <div class="stars"></div>
 
-  <div class="container">
-    <h1 id="titleText"></h1>
-    <p id="mainText">欢迎来到星际探索者平台。我们即将揭开宇宙的神秘面纱。</p>
-    <button onclick="explore()">开始探索</button>
+<header>
+  <h1>你的脚本名字</h1>
+</header>
+
+<nav>
+  <a href="#about">关于脚本</a>
+  <a href="#features">功能展示</a>
+  <a href="#screenshots">截图</a>
+  <a href="#download">下载</a>
+</nav>
+
+<section id="about">
+  <h2>关于脚本</h2>
+  <p>这里写脚本的介绍，比如脚本支持的平台、用途、优势等。</p>
+</section>
+
+<section id="features">
+  <h2>功能展示</h2>
+  <div class="features">
+    <div class="feature">
+      <h3>功能1</h3>
+      <p>功能1的详细描述。</p>
+    </div>
+    <div class="feature">
+      <h3>功能2</h3>
+      <p>功能2的详细描述。</p>
+    </div>
+    <div class="feature">
+      <h3>功能3</h3>
+      <p>功能3的详细描述。</p>
+    </div>
   </div>
+</section>
 
-  <script>
-    const title = "欢迎来到科幻世界";
-    let i = 0;
+<section id="screenshots">
+  <h2>脚本截图</h2>
+  <img src="screenshot1.png" alt="截图1" class="screenshot">
+  <img src="screenshot2.png" alt="截图2" class="screenshot">
+</section>
 
-    function typeWriter() {
-      if (i < title.length) {
-        document.getElementById("titleText").innerHTML += title.charAt(i);
-        i++;
-        setTimeout(typeWriter, 100);
-      }
-    }
+<section id="download">
+  <h2>下载脚本</h2>
+  <a href="你的下载链接" class="download-btn">立即下载</a>
+</section>
 
-    function explore() {
-      document.getElementById("mainText").innerHTML =
-        "你已启动探索计划，扫描中……<br><br>🔹 星际坐标：X-928 Y-47 Z-1024<br>🔹 发现未知信号源，等级：Ω<br>🔹 建议：派遣无人机侦";
-    }
+<footer>
+  &copy; 2025 你的名字 | 版权所有
+</footer>
 
-    window.onload = typeWriter;
-  </script>
 </body>
 </html>
