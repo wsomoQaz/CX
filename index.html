@@ -1,145 +1,47 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>脚本宣传网站</title>
-  <style>
-    body {
-      margin: 0;
-      font-family: "Microsoft YaHei", sans-serif;
-      background-color: #121212;
-      color: #fff;
-    }
-    header {
-      background-color: #1f1f1f;
-      padding: 20px;
-      text-align: center;
-    }
-    header h1 {
-      margin: 0;
-      font-size: 2.5em;
-      color: #00ffff;
-    }
-    nav {
-      display: flex;
-      justify-content: center;
-      background-color: #222;
-    }
-    nav a {
-      color: #fff;
-      text-decoration: none;
-      padding: 15px 20px;
-      transition: 0.3s;
-    }
-    nav a:hover {
-      background-color: #00ffff;
-      color: #000;
-    }
-    section {
-      padding: 50px 20px;
-      max-width: 900px;
-      margin: 0 auto;
-    }
-    .features {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 20px;
-      justify-content: center;
-    }
-    .feature {
-      background-color: #1f1f1f;
-      border-radius: 10px;
-      padding: 20px;
-      flex: 1 1 250px;
-      text-align: center;
-    }
-    .feature h3 {
-      margin-top: 0;
-      color: #00ffff;
-    }
-    .screenshot {
-      max-width: 100%;
-      border-radius: 10px;
-      margin: 10px 0;
-    }
-    .download-btn {
-      display: inline-block;
-      padding: 15px 30px;
-      background-color: #00ffff;
-      color: #000;
-      font-weight: bold;
-      text-decoration: none;
-      border-radius: 8px;
-      transition: 0.3s;
-      margin-top: 20px;
-    }
-    .download-btn:hover {
-      background-color: #00b3b3;
-      color: #fff;
-    }
-    footer {
-      text-align: center;
-      padding: 20px;
-      background-color: #1f1f1f;
-      color: #888;
-    }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>脚本宣传网站</title>
+<script>
+(function(){
+var h = "\x3Cheader\x3E\x3Ch1\x3E你的脚本名字\x3C/h1\x3E\x3C/header\x3E"+
+"\x3Cnav\x3E\x3Ca href='#about'\x3E关于脚本\x3C/a\x3E\x3Ca href='#features'\x3E功能展示\x3C/a\x3E\x3Ca href='#screenshots'\x3E截图\x3C/a\x3E\x3Ca href='#download'\x3E下载\x3C/a\x3E\x3C/nav\x3E"+
+"\x3Csection id='about'\x3E\x3Ch2\x3E关于脚本\x3C/h2\x3E\x3Cp\x3E这里写脚本的介绍，比如脚本支持的平台、用途、优势等。\x3C/p\x3E\x3C/section\x3E"+
+"\x3Csection id='features'\x3E\x3Ch2\x3E功能展示\x3C/h2\x3E\x3Cdiv class='features'\x3E"+
+"\x3Cdiv class='feature'\x3E\x3Ch3\x3E功能1\x3C/h3\x3E\x3Cp\x3E功能1的详细描述。\x3C/p\x3E\x3C/div\x3E"+
+"\x3Cdiv class='feature'\x3E\x3Ch3\x3E功能2\x3C/h3\x3E\x3Cp\x3E功能2的详细描述。\x3C/p\x3E\x3C/div\x3E"+
+"\x3Cdiv class='feature'\x3E\x3Ch3\x3E功能3\x3C/h3\x3E\x3Cp\x3E功能3的详细描述。\x3C/p\x3E\x3C/div\x3E"+
+"\x3C/div\x3E\x3C/section\x3E"+
+"\x3Csection id='screenshots'\x3E\x3Ch2\x3E脚本截图\x3C/h2\x3E"+
+"\x3Cimg src='https://picsum.photos/600/400?random=1' alt='截图1' class='screenshot'\x3E"+
+"\x3Cimg src='https://picsum.photos/600/400?random=2' alt='截图2' class='screenshot'\x3E"+
+"\x3Cimg src='https://picsum.photos/600/400?random=3' alt='截图3' class='screenshot'\x3E"+
+"\x3Cimg src='https://raw.githubusercontent.com/wsomoQaz/CX/wsomoQaz-patch-1/image_download_1754786373592.jpg' alt='截图4' class='screenshot'\x3E"+
+"\x3C/section\x3E"+
+"\x3Csection id='download'\x3E\x3Ch2\x3E下载脚本\x3C/h2\x3E\x3Ca href='你的下载链接' class='download-btn'\x3E立即下载\x3C/a\x3E\x3C/section\x3E"+
+"\x3Cfooter\x3E&copy; 2025 你的名字 | 版权所有\x3C/footer\x3E";
+document.write(h);
+})();
+</script>
+<style>
+body{margin:0;font-family:"Microsoft YaHei",sans-serif;background:#121212;color:#fff;}
+header{background:#1f1f1f;padding:20px;text-align:center;}
+header h1{margin:0;font-size:2.5em;color:#0ff;}
+nav{display:flex;justify-content:center;background:#222;}
+nav a{color:#fff;text-decoration:none;padding:15px 20px;transition:.3s;}
+nav a:hover{background:#0ff;color:#000;}
+section{padding:50px 20px;max-width:900px;margin:0 auto;}
+.features{display:flex;flex-wrap:wrap;gap:20px;justify-content:center;}
+.feature{background:#1f1f1f;border-radius:10px;padding:20px;flex:1 1 250px;text-align:center;}
+.feature h3{margin-top:0;color:#0ff;}
+.screenshot{max-width:100%;border-radius:10px;margin:10px 0;}
+.download-btn{display:inline-block;padding:15px 30px;background:#0ff;color:#000;font-weight:bold;text-decoration:none;border-radius:8px;transition:.3s;margin-top:20px;}
+.download-btn:hover{background:#0b3;color:#fff;}
+footer{text-align:center;padding:20px;background:#1f1f1f;color:#888;}
+</style>
 </head>
 <body>
-
-<header>
-  <h1>你的脚本名字</h1>
-</header>
-
-<nav>
-  <a href="#about">关于脚本</a>
-  <a href="#features">功能展示</a>
-  <a href="#screenshots">截图</a>
-  <a href="#download">下载</a>
-</nav>
-
-<section id="about">
-  <h2>关于脚本</h2>
-  <p>这里写脚本的介绍，比如脚本支持的平台、用途、优势等。</p>
-</section>
-
-<section id="features">
-  <h2>功能展示</h2>
-  <div class="features">
-    <div class="feature">
-      <h3>功能1</h3>
-      <p>功能1的详细描述。</p>
-    </div>
-    <div class="feature">
-      <h3>功能2</h3>
-      <p>功能2的详细描述。</p>
-    </div>
-    <div class="feature">
-      <h3>功能3</h3>
-      <p>功能3的详细描述。</p>
-    </div>
-  </div>
-</section>
-
-<section id="screenshots">
-  <h2>脚本截图</h2>
-  <!-- 随机网上图片示例 -->
-  <img src="https://picsum.photos/600/400?random=1" alt="截图1" class="screenshot">
-  <img src="https://picsum.photos/600/400?random=2" alt="截图2" class="screenshot">
-  <img src="https://picsum.photos/600/400?random=3" alt="截图3" class="screenshot">
-  <!-- GitHub 图片示例 -->
-  <img src="https://raw.githubusercontent.com/wsomoQaz/CX/wsomoQaz-patch-1/image_download_1754786373592.jpg" alt="截图4" class="screenshot">
-</section>
-
-<section id="download">
-  <h2>下载脚本</h2>
-  <a href="你的下载链接" class="download-btn">立即下载</a>
-</section>
-
-<footer>
-  &copy; 2025 你的名字 | 版权所有
-</footer>
-
 </body>
 </html>
