@@ -160,13 +160,39 @@
   <img src="https://picsum.photos/600/400?random=1" alt="照片1" class="screenshot">
   <img src="https://picsum.photos/600/400?random=2" alt="照片2" class="screenshot">
   <img src="https://picsum.photos/600/400?random=3" alt="照片3" class="screenshot">
-<!-- GitHub 图片示例 -->
+  <!-- GitHub 图片示例 -->
   <img src="https://raw.githubusercontent.com/wsomoQaz/CX/wsomoQaz-patch-1/image_download_1754786373592.jpg" alt="截图4" class="screenshot">
 </section>
 
 <section id="download">
   <h2>联系我</h2>
   <a href="mailto:yourenxiaoxing@qq.com" class="download-btn">📧 给我发邮件</a>
+  
+  <!-- 显示邮箱 -->
+  <p style="margin-top:15px; font-size:18px; color:#00ffff;">
+    我的邮箱：<span id="email">yourenxiaoxing@qq.com</span>
+  </p>
+
+  <!-- 复制按钮 -->
+  <button onclick="copyEmail()" style="
+    padding: 10px 20px;
+    border: none;
+    border-radius: 8px;
+    background: #00ffff;
+    color: #000;
+    font-weight: bold;
+    cursor: pointer;
+    transition: 0.3s;
+  ">📋 复制邮箱</button>
+
+  <script>
+    function copyEmail() {
+      const email = document.getElementById("email").textContent;
+      navigator.clipboard.writeText(email).then(() => {
+        alert("邮箱已复制: " + email);
+      });
+    }
+  </script>
 </section>
 
 <footer>
