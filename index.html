@@ -78,7 +78,7 @@
     .screenshot:hover {
       transform: scale(1.05);
     }
-    .download-btn {
+    .download-btn, .copy-btn {
       display: inline-block;
       padding: 15px 30px;
       background: linear-gradient(45deg, #00ffff, #0088ff);
@@ -89,8 +89,10 @@
       transition: 0.3s;
       margin-top: 20px;
       animation: pulse 2s infinite;
+      cursor: pointer;
+      border: none;
     }
-    .download-btn:hover {
+    .download-btn:hover, .copy-btn:hover {
       background: linear-gradient(45deg, #00b3b3, #0055ff);
       color: #fff;
     }
@@ -174,16 +176,7 @@
   </p>
 
   <!-- 复制按钮 -->
-  <button onclick="copyEmail()" style="
-    padding: 10px 20px;
-    border: none;
-    border-radius: 8px;
-    background: #00ffff;
-    color: #000;
-    font-weight: bold;
-    cursor: pointer;
-    transition: 0.3s;
-  ">📋 复制邮箱</button>
+  <button onclick="copyEmail()" class="copy-btn">📋 复制邮箱</button>
 
   <script>
     function copyEmail() {
