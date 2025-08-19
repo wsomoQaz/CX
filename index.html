@@ -3,28 +3,34 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>脚本宣传网站</title>
+  <title>我的第一个网站</title>
   <style>
     body {
       margin: 0;
       font-family: "Microsoft YaHei", sans-serif;
       background-color: #121212;
       color: #fff;
+      scroll-behavior: smooth; /* 平滑滚动 */
     }
     header {
       background-color: #1f1f1f;
-      padding: 20px;
+      padding: 40px 20px;
       text-align: center;
+      animation: fadeIn 1.5s ease;
     }
     header h1 {
       margin: 0;
-      font-size: 2.5em;
+      font-size: 2.8em;
       color: #00ffff;
+      text-shadow: 0 0 10px #00ffff;
     }
     nav {
       display: flex;
       justify-content: center;
       background-color: #222;
+      position: sticky;
+      top: 0;
+      z-index: 1000;
     }
     nav a {
       color: #fff;
@@ -53,6 +59,11 @@
       padding: 20px;
       flex: 1 1 250px;
       text-align: center;
+      transition: transform 0.3s;
+    }
+    .feature:hover {
+      transform: translateY(-10px);
+      box-shadow: 0 0 20px rgba(0,255,255,0.5);
     }
     .feature h3 {
       margin-top: 0;
@@ -62,20 +73,25 @@
       max-width: 100%;
       border-radius: 10px;
       margin: 10px 0;
+      transition: transform 0.3s;
+    }
+    .screenshot:hover {
+      transform: scale(1.05);
     }
     .download-btn {
       display: inline-block;
       padding: 15px 30px;
-      background-color: #00ffff;
+      background: linear-gradient(45deg, #00ffff, #0088ff);
       color: #000;
       font-weight: bold;
       text-decoration: none;
       border-radius: 8px;
       transition: 0.3s;
       margin-top: 20px;
+      animation: pulse 2s infinite;
     }
     .download-btn:hover {
-      background-color: #00b3b3;
+      background: linear-gradient(45deg, #00b3b3, #0055ff);
       color: #fff;
     }
     footer {
@@ -84,61 +100,77 @@
       background-color: #1f1f1f;
       color: #888;
     }
+
+    /* 动画 */
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(-20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes pulse {
+      0%, 100% { box-shadow: 0 0 10px #00ffff; }
+      50% { box-shadow: 0 0 30px #00ffff; }
+    }
+
+    /* 移动端优化 */
+    @media (max-width: 600px) {
+      header h1 { font-size: 2em; }
+      nav a { padding: 10px; font-size: 14px; }
+      .features { flex-direction: column; }
+    }
   </style>
 </head>
 <body>
 
 <header>
-  <h1>你的脚本名字</h1>
+  <h1>我的第一个网站</h1>
 </header>
 
 <nav>
-  <a href="#about">关于脚本</a>
-  <a href="#features">功能展示</a>
-  <a href="#screenshots">截图</a>
-  <a href="#download">下载</a>
+  <a href="#about">关于我</a>
+  <a href="#features">我的兴趣</a>
+  <a href="#screenshots">生活照片</a>
+  <a href="#download">联系我</a>
 </nav>
 
 <section id="about">
-  <h2>关于脚本</h2>
-  <p>这里写脚本的介绍，比如脚本支持的平台、用途、优势等。</p>
+  <h2>关于我</h2>
+  <p>你好！这是我制作的第一个网站，用来练习网页设计与前端开发。</p>
 </section>
 
 <section id="features">
-  <h2>功能展示</h2>
+  <h2>我的兴趣</h2>
   <div class="features">
     <div class="feature">
-      <h3>功能1</h3>
-      <p>功能1的详细描述。</p>
+      <h3>编程</h3>
+      <p>学习 Lua、HTML、CSS 和 JavaScript，尝试做一些小项目。</p>
     </div>
     <div class="feature">
-      <h3>功能2</h3>
-      <p>功能2的详细描述。</p>
+      <h3>游戏</h3>
+      <p>喜欢 Roblox、Minecraft 等沙盒类游戏。</p>
     </div>
     <div class="feature">
-      <h3>功能3</h3>
-      <p>功能3的详细描述。</p>
+      <h3>创作</h3>
+      <p>写代码、做图、分享想法，让我的灵感实现出来。</p>
     </div>
   </div>
 </section>
 
 <section id="screenshots">
-  <h2>脚本截图</h2>
-  <!-- 随机网上图片示例 -->
-  <img src="https://picsum.photos/600/400?random=1" alt="截图1" class="screenshot">
-  <img src="https://picsum.photos/600/400?random=2" alt="截图2" class="screenshot">
-  <img src="https://picsum.photos/600/400?random=3" alt="截图3" class="screenshot">
-  <!-- GitHub 图片示例 -->
+  <h2>生活照片</h2>
+  <img src="https://picsum.photos/600/400?random=1" alt="照片1" class="screenshot">
+  <img src="https://picsum.photos/600/400?random=2" alt="照片2" class="screenshot">
+  <img src="https://picsum.photos/600/400?random=3" alt="照片3" class="screenshot">
+<!-- GitHub 图片示例 -->
   <img src="https://raw.githubusercontent.com/wsomoQaz/CX/wsomoQaz-patch-1/image_download_1754786373592.jpg" alt="截图4" class="screenshot">
 </section>
 
 <section id="download">
-  <h2>下载脚本</h2>
-  <a href="你的下载链接" class="download-btn">立即下载</a>
+  <h2>联系我</h2>
+  <a href="yourenxiaoxing@qq.com" class="download-btn">📧 给我发邮件</a>
 </section>
 
 <footer>
-  &copy; 2025 你的名字 | 版权所有
+  &copy; 2025 我的第一个网站 | 自豪地用 HTML + CSS 制作
 </footer>
 
 </body>
