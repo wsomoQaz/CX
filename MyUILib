@@ -1,4 +1,4 @@
-local UILib = loadstring(game:HttpGet("你的UILib文件链接"))()
+local UILib = loadstring(game:HttpGet("https://raw.githubusercontent.com/wsomoQaz/CX/main/main"))()
 
 local win = UILib:Window("测试窗口")
 UILib:Button(win, "点我", function() print("按钮被点了") end)
