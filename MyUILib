@@ -1,7 +1,17 @@
-local UILib = loadstring(game:HttpGet("https://raw.githubusercontent.com/wsomoQaz/CX/main/main"))()
+local UILib = require(path.to.UILib)
 
-local win = UILib:Window("测试窗口")
-UILib:Button(win, "点我", function() print("按钮被点了") end)
-UILib:Toggle(win, "开关", false, function(state) print("开关状态:", state) end)
-UILib:Slider(win, "滑块", 0, 100, 50, function(val) print("滑块值:", val) end)
-UILib:Dropdown(win, "下拉菜单", {"选项1","选项2","选项3"}, function(opt) print("选择了:", opt) end)
+-- 创建窗口
+local win = UILib:Window("科幻 UI Demo")
+
+-- 添加 Tab
+local tab1 = win:AddTab("功能 A")
+local tab2 = win:AddTab("功能 B")
+
+-- 添加控件
+UILib:Button(tab1, "点我一下", function()
+    print("按钮被点击")
+end)
+
+UILib:Button(tab2, "另一功能", function()
+    print("B tab 的按钮")
+end)
