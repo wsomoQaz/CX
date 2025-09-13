@@ -1,4 +1,4 @@
-local UILib = require(path.to.UILib)
+local UILib = loadstring(game:HttpGet("https://raw.githubusercontent.com/wsomoQaz/CX/main/main"))()
 
 -- 创建窗口
 local win = UILib:Window("科幻 UI Demo")
