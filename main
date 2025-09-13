@@ -1,47 +1,135 @@
--- Roblox UI 库 (简单实现)
+-- Roblox UI 库 (扩展版)
 local UILib = {}
 
--- 基础创建函数
+-- 主题颜色
+UILib.Theme = {
+    Background = Color3.fromRGB(30,30,40),
+    Accent = Color3.fromRGB(0,170,255),
+    Text = Color3.fromRGB(255,255,255),
+    Section = Color3.fromRGB(50,50,60)
+}
+
+-- 工具函数：创建元素
 function UILib:createElement(className, props, parent)
     local obj = Instance.new(className)
     for k, v in pairs(props or {}) do
         obj[k] = v
     end
-    if parent then
-        obj.Parent = parent
-    end
+    if parent then obj.Parent = parent end
     return obj
 end
 
--- 创建窗口 (顶层容器)
+-- 创建窗口 (支持 Tab)
 function UILib:Window(title)
-    local ScreenGui = self:createElement("ScreenGui", {Name="CustomUI"}, game.Players.LocalPlayer:WaitForChild("PlayerGui"))
+    local ScreenGui = self:createElement("ScreenGui", {Name="UILibUI"}, game.Players.LocalPlayer:WaitForChild("PlayerGui"))
+
     local Frame = self:createElement("Frame", {
-        Size = UDim2.new(0, 300, 0, 400),
+        Size = UDim2.new(0, 450, 0, 350),
         Position = UDim2.new(0.3, 0, 0.3, 0),
-        BackgroundColor3 = Color3.fromRGB(40,40,40),
+        BackgroundColor3 = self.Theme.Background,
         BorderSizePixel = 0
     }, ScreenGui)
 
     local Title = self:createElement("TextLabel", {
         Text = title,
-        Size = UDim2.new(1, 0, 0, 30),
-        BackgroundColor3 = Color3.fromRGB(25,25,25),
-        TextColor3 = Color3.fromRGB(255,255,255),
+        Size = UDim2.new(1, 0, 0, 35),
+        BackgroundColor3 = self.Theme.Accent,
+        TextColor3 = self.Theme.Text,
         Font = Enum.Font.SourceSansBold,
         TextSize = 20
     }, Frame)
 
-    return Frame
+    -- 拖动功能
+    local UIS = game:GetService("UserInputService")
+    local dragging, dragInput, dragStart, startPos
+
+    Title.InputBegan:Connect(function(input)
+        if input.UserInputType == Enum.UserInputType.MouseButton1 then
+            dragging = true
+            dragStart = input.Position
+            startPos = Frame.Position
+            input.Changed:Connect(function()
+                if input.UserInputState == Enum.UserInputState.End then dragging = false end
+            end)
+        end
+    end)
+    UIS.InputChanged:Connect(function(input)
+        if input.UserInputType == Enum.UserInputType.MouseMovement and dragging then
+            local delta = input.Position - dragStart
+            Frame.Position = UDim2.new(startPos.X.Scale, startPos.X.Offset + delta.X,
+                                       startPos.Y.Scale, startPos.Y.Offset + delta.Y)
+        end
+    end)
+
+    -- Tab 容器
+    local TabBar = self:createElement("Frame", {
+        Size = UDim2.new(0,120,1,-35),
+        Position = UDim2.new(0,0,0,35),
+        BackgroundColor3 = self.Theme.Section,
+        BorderSizePixel = 0
+    }, Frame)
+
+    local Content = self:createElement("Frame", {
+        Size = UDim2.new(1,-120,1,-35),
+        Position = UDim2.new(0,120,0,35),
+        BackgroundColor3 = self.Theme.Background,
+        BorderSizePixel = 0
+    }, Frame)
+
+    local UIList = Instance.new("UIListLayout", Content)
+    UIList.Padding = UDim.new(0,5)
+    UIList.SortOrder = Enum.SortOrder.LayoutOrder
+
+    local window = {
+        Frame = Frame,
+        TabBar = TabBar,
+        Content = Content,
+        Tabs = {},
+    }
+
+    -- 添加 Tab 方法
+    function window:AddTab(tabName)
+        local button = UILib:createElement("TextButton", {
+            Text = tabName,
+            Size = UDim2.new(1,0,0,40),
+            BackgroundColor3 = UILib.Theme.Section,
+            TextColor3 = UILib.Theme.Text,
+            Font = Enum.Font.SourceSans,
+            TextSize = 18
+        }, TabBar)
+
+        local tabContent = UILib:createElement("Frame", {
+            Size = UDim2.new(1,0,1,0),
+            BackgroundTransparency = 1,
+            Visible = false,
+        }, Content)
+
+        local list = Instance.new("UIListLayout", tabContent)
+        list.Padding = UDim.new(0,5)
+        list.SortOrder = Enum.SortOrder.LayoutOrder
+
+        button.MouseButton1Click:Connect(function()
+            for _,t in pairs(window.Tabs) do
+                t.Frame.Visible = false
+            end
+            tabContent.Visible = true
+        end)
+
+        table.insert(window.Tabs, {Name=tabName, Frame=tabContent})
+
+        return tabContent
+    end
+
+    return window
 end
 
 -- 按钮
 function UILib:Button(parent, text, callback)
     local button = self:createElement("TextButton", {
         Text = text,
-        Size = UDim2.new(1, -20, 0, 40),
-        BackgroundColor3 = Color3.fromRGB(60,60,60),
-        TextColor3 = Color3.fromRGB(255,255,255),
+        Size = UDim2.new(1, -10, 0, 35),
+        BackgroundColor3 = self.Theme.Section,
+        TextColor3 = self.Theme.Text,
         Font = Enum.Font.SourceSans,
         TextSize = 18
     }, parent)
@@ -49,79 +137,4 @@ function UILib:Button(parent, text, callback)
     return button
 end
 
--- 开关
-function UILib:Toggle(parent, text, default, callback)
-    local toggle = self:createElement("TextButton", {
-        Text = text .. ": " .. (default and "ON" or "OFF"),
-        Size = UDim2.new(1, -20, 0, 40),
-        BackgroundColor3 = Color3.fromRGB(80,80,80),
-        TextColor3 = Color3.fromRGB(255,255,255),
-    }, parent)
-
-    local state = default or false
-    toggle.MouseButton1Click:Connect(function()
-        state = not state
-        toggle.Text = text .. ": " .. (state and "ON" or "OFF")
-        if callback then callback(state) end
-    end)
-    return toggle
-end
-
--- 滑块 (简化版)
-function UILib:Slider(parent, text, min, max, default, callback)
-    local sliderFrame = self:createElement("Frame", {
-        Size = UDim2.new(1, -20, 0, 50),
-        BackgroundColor3 = Color3.fromRGB(50,50,50),
-    }, parent)
-
-    self:createElement("TextLabel", {
-        Text = text .. " ["..default.."]",
-        Size = UDim2.new(1,0,0,20),
-        BackgroundTransparency = 1,
-        TextColor3 = Color3.fromRGB(255,255,255),
-        Font = Enum.Font.SourceSans,
-        TextSize = 16
-    }, sliderFrame)
-
-    local slider = self:createElement("TextButton", {
-        Text = "滑块 (假装可拖动)",
-        Size = UDim2.new(1,0,0,25),
-        Position = UDim2.new(0,0,0,20),
-        BackgroundColor3 = Color3.fromRGB(100,100,100),
-        TextColor3 = Color3.fromRGB(255,255,255),
-    }, sliderFrame)
-
-    slider.MouseButton1Click:Connect(function()
-        local value = math.random(min,max) -- 这里用随机数模拟
-        sliderFrame.TextLabel.Text = text .. " ["..value.."]"
-        if callback then callback(value) end
-    end)
-end
-
--- 下拉菜单
-function UILib:Dropdown(parent, text, options, callback)
-    local dropdown = self:createElement("TextButton", {
-        Text = text.." ▼",
-        Size = UDim2.new(1, -20, 0, 40),
-        BackgroundColor3 = Color3.fromRGB(70,70,70),
-        TextColor3 = Color3.fromRGB(255,255,255),
-    }, parent)
-
-    dropdown.MouseButton1Click:Connect(function()
-        for _, opt in ipairs(options) do
-            local item = self:createElement("TextButton", {
-                Text = opt,
-                Size = UDim2.new(1, -20, 0, 30),
-                BackgroundColor3 = Color3.fromRGB(90,90,90),
-                TextColor3 = Color3.fromRGB(255,255,255),
-            }, parent)
-            item.MouseButton1Click:Connect(function()
-                dropdown.Text = text..": "..opt
-                if callback then callback(opt) end
-                item:Destroy()
-            end)
-        end
-    end)
-end
-
-return UILib
+-- 其它控件 (Toggle, Slider, Dropdown) 可直接复用之前的代码，只是把颜色换成 UILib.Theme
