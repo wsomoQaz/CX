@@ -8,7 +8,7 @@ local Translate = {
     ["Slot 1"] = "存档",
     ["PLAY"] = "开始",
     ["Select a Slot"] = "选择存档",
-    ["Back"] = "返回"
+    ["GO BACK"] = "返回"
 }
 
 -- 递归函数：遍历 UI 元素并替换文本
