@@ -5,7 +5,7 @@
 local Translate = {
     ["Cash"] = "现金",
     ["Data Size"] = "数据大小",
-    ["Slot 1"] = "存档",
+    ["Slot"] = "存档",
     ["PLAY"] = "开始",
     ["Select a Slot"] = "选择存档",
     ["GO BACK"] = "返回"
