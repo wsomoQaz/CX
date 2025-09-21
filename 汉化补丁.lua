@@ -97,6 +97,16 @@ local Translate = {
     ["Unclaimable"]="有人的无人区",
     ["Drag Object"]="拖动对象",
     ["Unbox Structure"]="打开",
+    ["Name"]="名字",
+    ["Charge"]="进度条",
+    ["BUILD MODE"]="建造模式",
+    ["SHOP"]="商店",
+    ["PLAYERS"]="玩家权限",
+    ["SETTINGS"]="设置",
+    ["Drop Tool"]="丢弃工具",
+    ["Close"]="取消",
+    ["Confirm"]="确认",
+    
 }
 
 local function TranslateUI(obj)
