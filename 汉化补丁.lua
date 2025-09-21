@@ -95,6 +95,8 @@ local Translate = {
     ["CLAIM PROPERTY"]="载入土地",
     ["Claimable"]="占领无人区",
     ["Unclaimable"]="有人的无人区",
+    ["Drag Object"]="拖动对象",
+    ["Unbox Structure"]="打开",
 }
 
 local function TranslateUI(obj)
@@ -117,7 +119,7 @@ TranslateUI(PlayerGui)
 
 
 PlayerGui.DescendantAdded:Connect(function(obj)
-    task.wait(0.001) 
+    task.wait(0.1) 
     if obj:IsA("TextLabel") or obj:IsA("TextButton") or obj:IsA("TextBox") then
         local text = obj.Text
         if Translate[text] then
