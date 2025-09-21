@@ -1,49 +1,116 @@
--- Roblox 外部汉化框架
--- 自用翻译脚本
+-- Roblox 文本提取 + GUI 显示 + 复制功能
 
--- 翻译字典（自己填充）
-local Translate = {
-    ["Cash"] = "现金",
-    ["Data Size"] = "数据大小",
-    ["Slot"] = "存档",
-    ["PLAY"] = "开始",
-    ["Select a Slot"] = "选择存档",
-    ["GO BACK"] = "返回"
-}
+local Players = game:GetService("Players")
+local LocalPlayer = Players.LocalPlayer
+local PlayerGui = LocalPlayer:WaitForChild("PlayerGui")
 
--- 递归函数：遍历 UI 元素并替换文本
-local function TranslateUI(obj)
+-- 保存文本
+local FoundTexts = {}
+
+-- 创建 GUI
+local ScreenGui = Instance.new("ScreenGui")
+ScreenGui.Name = "TextCollectorGui"
+ScreenGui.ResetOnSpawn = false
+ScreenGui.Parent = PlayerGui
+
+-- 背景框
+local Frame = Instance.new("Frame")
+Frame.Size = UDim2.new(0, 400, 0, 300)
+Frame.Position = UDim2.new(0.5, -200, 0.5, -150)
+Frame.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
+Frame.Active = true
+Frame.Draggable = true
+Frame.Parent = ScreenGui
+
+-- 标题
+local Title = Instance.new("TextLabel")
+Title.Size = UDim2.new(1, 0, 0, 30)
+Title.BackgroundColor3 = Color3.fromRGB(60, 60, 60)
+Title.TextColor3 = Color3.fromRGB(255, 255, 255)
+Title.Text = "文本提取器"
+Title.Parent = Frame
+
+-- 滚动区域
+local ScrollingFrame = Instance.new("ScrollingFrame")
+ScrollingFrame.Size = UDim2.new(1, -10, 1, -70)
+ScrollingFrame.Position = UDim2.new(0, 5, 0, 35)
+ScrollingFrame.CanvasSize = UDim2.new(0, 0, 0, 0)
+ScrollingFrame.ScrollBarThickness = 8
+ScrollingFrame.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
+ScrollingFrame.Parent = Frame
+
+-- 复制按钮
+local CopyButton = Instance.new("TextButton")
+CopyButton.Size = UDim2.new(1, -10, 0, 30)
+CopyButton.Position = UDim2.new(0, 5, 1, -35)
+CopyButton.BackgroundColor3 = Color3.fromRGB(80, 80, 200)
+CopyButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+CopyButton.Text = "复制所有文本"
+CopyButton.Parent = Frame
+
+-- 布局
+local UIListLayout = Instance.new("UIListLayout")
+UIListLayout.Parent = ScrollingFrame
+UIListLayout.SortOrder = Enum.SortOrder.LayoutOrder
+
+-- 更新滚动大小
+local function UpdateCanvas()
+    ScrollingFrame.CanvasSize = UDim2.new(0, 0, 0, UIListLayout.AbsoluteContentSize.Y)
+end
+UIListLayout:GetPropertyChangedSignal("AbsoluteContentSize"):Connect(UpdateCanvas)
+
+-- 添加一条文本
+local function AddText(text)
+    if FoundTexts[text] then return end
+    FoundTexts[text] = true
+
+    local Label = Instance.new("TextLabel")
+    Label.Size = UDim2.new(1, -10, 0, 25)
+    Label.BackgroundTransparency = 1
+    Label.TextColor3 = Color3.fromRGB(255, 255, 255)
+    Label.TextXAlignment = Enum.TextXAlignment.Left
+    Label.Text = text
+    Label.Parent = ScrollingFrame
+end
+
+-- 遍历已有 UI
+local function CollectTexts(obj)
     if obj:IsA("TextLabel") or obj:IsA("TextButton") or obj:IsA("TextBox") then
-        local text = obj.Text
-        if Translate[text] then
-            obj.Text = Translate[text]
+        if obj.Text and obj.Text ~= "" then
+            AddText(obj.Text)
         end
     end
     for _, child in pairs(obj:GetChildren()) do
-        TranslateUI(child)
+        CollectTexts(child)
     end
 end
 
--- 初始翻译：遍历玩家 UI
-local Player = game:GetService("Players").LocalPlayer
-local PlayerGui = Player:WaitForChild("PlayerGui")
+CollectTexts(PlayerGui)
 
-TranslateUI(PlayerGui)
-
--- 实时监听：新出现的 UI 也会被翻译
+-- 监听新 UI
 PlayerGui.DescendantAdded:Connect(function(obj)
-    task.wait(0.1) -- 等待 UI 加载好
+    task.wait(0.1)
     if obj:IsA("TextLabel") or obj:IsA("TextButton") or obj:IsA("TextBox") then
-        local text = obj.Text
-        if Translate[text] then
-            obj.Text = Translate[text]
+        if obj.Text and obj.Text ~= "" then
+            AddText(obj.Text)
         end
     end
 end)
 
--- 定时更新：防止动态修改文本时丢失
-task.spawn(function()
-    while task.wait(2) do
-        TranslateUI(PlayerGui)
+-- 点击复制
+CopyButton.MouseButton1Click:Connect(function()
+    local allText = ""
+    for text, _ in pairs(FoundTexts) do
+        allText = allText .. text .. "\n"
     end
+    -- 尝试复制到剪贴板（有些执行器支持）
+    if setclipboard then
+        setclipboard(allText)
+        CopyButton.Text = "已复制到剪贴板！"
+    else
+        CopyButton.Text = "复制失败（执行器不支持）"
+    end
+    task.delay(2, function()
+        CopyButton.Text = "复制所有文本"
+    end)
 end)
