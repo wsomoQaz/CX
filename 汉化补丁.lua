@@ -91,6 +91,10 @@ local Translate = {
     ["Load Count"] = "加载次数",
     ["DELETE SLOT"]="删除插槽",
     ["DONE"]="取消",
+    ["GO BACK"]="返回",
+    ["CLAIM PROPERTY"]="载入土地",
+    ["Claimable"]="占领无人区",
+    ["Unclaimable"]="有人的无人区",
 }
 
 local function TranslateUI(obj)
