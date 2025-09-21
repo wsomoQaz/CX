@@ -106,6 +106,7 @@ local Translate = {
     ["Drop Tool"]="丢弃工具",
     ["Close"]="取消",
     ["Confirm"]="确认",
+    ["REWARDS"]="签到",
     
 }
 
