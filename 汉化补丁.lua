@@ -117,7 +117,7 @@ TranslateUI(PlayerGui)
 
 
 PlayerGui.DescendantAdded:Connect(function(obj)
-    task.wait(0.1) 
+    task.wait(0.001) 
     if obj:IsA("TextLabel") or obj:IsA("TextButton") or obj:IsA("TextBox") then
         local text = obj.Text
         if Translate[text] then
