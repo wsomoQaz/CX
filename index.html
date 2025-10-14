@@ -1,176 +1,197 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>访客留言板（GitHub Issues）</title>
-<style>
-  :root{
-    --bg:#0f1724; --card:#0b1220; --accent:#7dd3fc; --muted:#94a3b8;
-    --glass: rgba(255,255,255,0.03);
-  }
-  *{box-sizing:border-box}
-  body{
-    margin:0; min-height:100vh; display:flex; align-items:center; justify-content:center;
-    font-family: Inter, "Noto Sans SC", system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue";
-    background: linear-gradient(180deg,#071025 0%, #081226 60%);
-    color:#e6eef6;
-    padding:24px;
-  }
-  .card{
-    width:100%; max-width:720px; background:linear-gradient(180deg,var(--card), rgba(11,18,32,0.95));
-    border-radius:12px; padding:24px; box-shadow: 0 10px 30px rgba(2,6,23,0.6);
-    backdrop-filter: blur(6px);
-  }
-  h1{margin:0 0 6px 0; font-size:20px}
-  p.lead{margin:0 0 18px 0; color:var(--muted); font-size:14px}
-  form {display:flex; gap:12px; flex-wrap:wrap; align-items:flex-end}
-  .col {flex:1 1 220px; min-width:180px}
-  label{display:block; font-size:12px; color:var(--muted); margin-bottom:6px}
-  input[type="text"], textarea, select{
-    width:100%; padding:10px 12px; border-radius:8px; border:1px solid rgba(255,255,255,0.04);
-    background:var(--glass); color:inherit; outline:none; font-size:14px;
-  }
-  textarea{min-height:90px; resize:vertical}
-  .row {display:flex; gap:12px; align-items:center}
-  button{
-    background:linear-gradient(90deg,var(--accent),#60a5fa); border:none; color:#022; padding:10px 14px;
-    border-radius:10px; cursor:pointer; font-weight:600; box-shadow: 0 6px 18px rgba(125,211,252,0.12);
-  }
-  button.ghost{background:transparent; border:1px solid rgba(255,255,255,0.06); color:var(--muted)}
-  .note{font-size:13px; color:var(--muted); margin-top:12px}
-  .links{margin-top:14px; display:flex; gap:8px; flex-wrap:wrap}
-  .small{font-size:12px; color:var(--muted)}
-  .success{color:#86efac}
-  footer{margin-top:18px; text-align:right; font-size:12px; color:var(--muted)}
-  @media (max-width:520px){
-    .row{flex-direction:column; align-items:stretch}
-    form{gap:10px}
-  }
-</style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>我的第一个网站</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: "Microsoft YaHei", sans-serif;
+      background-color: #121212;
+      color: #fff;
+      scroll-behavior: smooth; /* 平滑滚动 */
+    }
+    header {
+      background-color: #1f1f1f;
+      padding: 40px 20px;
+      text-align: center;
+      animation: fadeIn 1.5s ease;
+    }
+    header h1 {
+      margin: 0;
+      font-size: 2.8em;
+      color: #00ffff;
+      text-shadow: 0 0 10px #00ffff;
+    }
+    nav {
+      display: flex;
+      justify-content: center;
+      background-color: #222;
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+    }
+    nav a {
+      color: #fff;
+      text-decoration: none;
+      padding: 15px 20px;
+      transition: 0.3s;
+    }
+    nav a:hover {
+      background-color: #00ffff;
+      color: #000;
+    }
+    section {
+      padding: 50px 20px;
+      max-width: 900px;
+      margin: 0 auto;
+    }
+    .features {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 20px;
+      justify-content: center;
+    }
+    .feature {
+      background-color: #1f1f1f;
+      border-radius: 10px;
+      padding: 20px;
+      flex: 1 1 250px;
+      text-align: center;
+      transition: transform 0.3s;
+    }
+    .feature:hover {
+      transform: translateY(-10px);
+      box-shadow: 0 0 20px rgba(0,255,255,0.5);
+    }
+    .feature h3 {
+      margin-top: 0;
+      color: #00ffff;
+    }
+    .screenshot {
+      max-width: 100%;
+      border-radius: 10px;
+      margin: 10px 0;
+      transition: transform 0.3s;
+    }
+    .screenshot:hover {
+      transform: scale(1.05);
+    }
+    .download-btn, .copy-btn {
+      display: inline-block;
+      padding: 15px 30px;
+      background: linear-gradient(45deg, #00ffff, #0088ff);
+      color: #000;
+      font-weight: bold;
+      text-decoration: none;
+      border-radius: 8px;
+      transition: 0.3s;
+      margin-top: 20px;
+      animation: pulse 2s infinite;
+      cursor: pointer;
+      border: none;
+    }
+    .download-btn:hover, .copy-btn:hover {
+      background: linear-gradient(45deg, #00b3b3, #0055ff);
+      color: #fff;
+    }
+    footer {
+      text-align: center;
+      padding: 20px;
+      background-color: #1f1f1f;
+      color: #888;
+    }
+
+    /* 动画 */
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(-20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes pulse {
+      0%, 100% { box-shadow: 0 0 10px #00ffff; }
+      50% { box-shadow: 0 0 30px #00ffff; }
+    }
+
+    /* 移动端优化 */
+    @media (max-width: 600px) {
+      header h1 { font-size: 2em; }
+      nav a { padding: 10px; font-size: 14px; }
+      .features { flex-direction: column; }
+    }
+  </style>
 </head>
 <body>
-  <main class="card" role="main">
-    <h1>访客留言板</h1>
-    <p class="lead">在下面输入你的名字并提交。提交会打开 GitHub 的新 Issue 页面并自动填入内容 —— 你需要登录 GitHub 才会在 Issue 上显示你的账号（这是为了防止滥用）。</p>
 
-    <form id="guestForm">
-      <div class="col">
-        <label for="name">你的名字或昵称（必填）</label>
-        <input id="name" name="name" type="text" placeholder="例如：小明 / wsomoQaz" required maxlength="60" />
-      </div>
+<header>
+  <h1>我的第一个网站</h1>
+</header>
 
-      <div class="col">
-        <label for="message">留言（选填）</label>
-        <textarea id="message" name="message" placeholder="想说的话（可空）" maxlength="400"></textarea>
-      </div>
+<nav>
+  <a href="#about">关于我</a>
+  <a href="#features">我的兴趣</a>
+  <a href="#screenshots">生活照片</a>
+  <a href="#download">联系我</a>
+</nav>
 
-      <div style="flex-basis:100%; height:0"></div>
+<section id="about">
+  <h2>关于我</h2>
+  <p>你好！这是我制作的第一个网站，用来练习网页设计与前端开发。</p>
+</section>
 
-      <div class="row" style="margin-top:4px;">
-        <button id="submitIssue" type="submit">以 GitHub Issue 留言</button>
-        <button id="submitGoogle" class="ghost" type="button">使用 Google 表单提交</button>
-        <div style="flex:1"></div>
-      </div>
-
-      <p class="note">
-        说明：<br>
-        • GitHub Issue 方法会把留言作为 Issue 提交到你的仓库（访客需要登录 GitHub 才能显示用户名）。<br>
-        • Google 表单方法适合访客不登录的情况，但要把表单 action 改成你自己的 Google 表单链接（下面会演示如何替换）。
-      </p>
-    </form>
-
-    <div class="links small">
-      <div>示例仓库：<code id="repoExample"></code></div>
-      <div>Issue 模板建议：在仓库里创建 <code>.github/ISSUE_TEMPLATE/guest.yml</code> 以规范留言格式。</div>
+<section id="features">
+  <h2>我的兴趣</h2>
+  <div class="features">
+    <div class="feature">
+      <h3>编程</h3>
+      <p>学习 Lua、HTML、CSS 和 JavaScript，尝试做一些小项目。</p>
     </div>
+    <div class="feature">
+      <h3>游戏</h3>
+      <p>喜欢 Roblox、Minecraft 等沙盒类游戏。</p>
+    </div>
+    <div class="feature">
+      <h3>创作</h3>
+      <p>写代码、做图、分享想法，让我的灵感实现出来。</p>
+    </div>
+  </div>
+</section>
 
-    <footer>把此文件放到仓库并启用 GitHub Pages（Settings → Pages）即可。</footer>
-  </main>
+<section id="screenshots">
+  <h2>生活照片</h2>
+  <img src="https://picsum.photos/600/400?random=1" alt="照片1" class="screenshot">
+  <img src="https://picsum.photos/600/400?random=2" alt="照片2" class="screenshot">
+  <img src="https://picsum.photos/600/400?random=3" alt="照片3" class="screenshot">
+  <!-- GitHub 图片示例 -->
+  <img src="https://raw.githubusercontent.com/wsomoQaz/CX/wsomoQaz-patch-1/image_download_1754786373592.jpg" alt="截图4" class="screenshot">
+<img src="https://raw.githubusercontent.com/wsomoQaz/CX/main/rspy.jpg" alt="照片5" class="screenshot">
+</section>
 
-<script>
-/*
-  使用说明（必须改这两个变量）：
-  - owner: 你的 GitHub 用户名或组织名（例如：wsomoQaz）
-  - repo: 你的仓库名（例如：guestbook）
-  保存后将页面推到仓库，然后启用 GitHub Pages。
-*/
-const owner = "你的-GitHub-用户名";
-const repo  = "你的-仓库名";
+<section id="download">
+  <h2>联系我</h2>
+  <a href="mailto:yourenxiaoxing@qq.com" class="download-btn">📧 给我发邮件</a>
 
-// 显示示例给用户（页面中）
-document.getElementById('repoExample').textContent = owner + "/" + repo;
+  <!-- 显示邮箱 -->
+  <p style="margin-top:15px; font-size:18px; color:#00ffff;">
+    我的邮箱：<span id="email">yourenxiaoxing@qq.com</span>
+  </p>
 
-// 构造 prefilled new issue URL（会打开 GitHub 的新 issue 页面，title/body 会被预填）
-// 格式: https://github.com/{owner}/{repo}/issues/new?title=...&body=...
-function buildIssueUrl(name, message){
-  const title = encodeURIComponent("访客留言 — " + name);
-  const bodyParts = [
-    "**访客名字**: " + name,
-    "",
-    "**留言**:",
-    message || "(空)",
-    "",
-    "---",
-    "_提交自 GitHub Pages 留言板_"
-  ];
-  const body = encodeURIComponent(bodyParts.join("\n"));
-  return `https://github.com/${owner}/${repo}/issues/new?title=${title}&body=${body}`;
-}
+  <!-- 复制按钮 -->
+  <button onclick="copyEmail()" class="copy-btn">📋 复制邮箱</button>
 
-// 事件：提交到 GitHub Issue（重定向用户打开预填页面）
-document.getElementById('guestForm').addEventListener('submit', function(e){
-  e.preventDefault();
-  const name = (document.getElementById('name').value || "").trim();
-  const message = (document.getElementById('message').value || "").trim();
+  <script>
+    function copyEmail() {
+      const email = document.getElementById("email").textContent;
+      navigator.clipboard.writeText(email).then(() => {
+        alert("邮箱已复制: " + email);
+      });
+    }
+  </script>
+</section>
 
-  if(!name){
-    alert("请填写名字。");
-    return;
-  }
+<footer>
+  &copy; 2025 我的第一个网站 | 自豪地用 HTML + CSS 制作
+</footer>
 
-  const url = buildIssueUrl(name, message);
-  // 打开新窗口（或当前窗口）；使用 _blank 有助于用户回到页面
-  window.open(url, "_blank");
-});
-
-// Google 表单备用（需要你替换 formAction 为你自己的表单 URL）
-document.getElementById('submitGoogle').addEventListener('click', function(){
-  // 示例：将数据提交到 Google Forms 的 POST endpoint（你必须替换下面的 URL 与 entry 字段）
-  const formAction = "https://docs.google.com/forms/d/e/你的表单ID/formResponse"; // <- 改成你的 Google 表单 URL
-  const entryNameField = "entry.1234567890"; // <- 改成你表单中「名字」字段的 entry id
-  const entryMessageField = "entry.0987654321"; // <- 改成你表单中「留言」字段的 entry id
-
-  const name = (document.getElementById('name').value || "").trim();
-  const message = (document.getElementById('message').value || "").trim();
-
-  if(!name){
-    alert("请填写名字。");
-    return;
-  }
-
-  if(formAction.includes("你的表单ID")){
-    alert("请先在代码中替换 formAction 与 entry 字段（查看页面顶部提示）。");
-    return;
-  }
-
-  // 创建并提交隐藏表单
-  const f = document.createElement('form');
-  f.method = 'POST';
-  f.action = formAction;
-  f.target = '_blank';
-  f.style.display = 'none';
-
-  const in1 = document.createElement('input');
-  in1.name = entryNameField; in1.value = name; f.appendChild(in1);
-  const in2 = document.createElement('input');
-  in2.name = entryMessageField; in2.value = message; f.appendChild(in2);
-
-  document.body.appendChild(f);
-  f.submit();
-  document.body.removeChild(f);
-  alert("已打开 Google 表单提交（新窗口），请按提示完成提交。");
-});
-</script>
 </body>
 </html>
