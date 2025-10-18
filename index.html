@@ -1,197 +1,242 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>我的第一个网站</title>
-  <style>
-    body {
-      margin: 0;
-      font-family: "Microsoft YaHei", sans-serif;
-      background-color: #121212;
-      color: #fff;
-      scroll-behavior: smooth; /* 平滑滚动 */
-    }
-    header {
-      background-color: #1f1f1f;
-      padding: 40px 20px;
-      text-align: center;
-      animation: fadeIn 1.5s ease;
-    }
-    header h1 {
-      margin: 0;
-      font-size: 2.8em;
-      color: #00ffff;
-      text-shadow: 0 0 10px #00ffff;
-    }
-    nav {
-      display: flex;
-      justify-content: center;
-      background-color: #222;
-      position: sticky;
-      top: 0;
-      z-index: 1000;
-    }
-    nav a {
-      color: #fff;
-      text-decoration: none;
-      padding: 15px 20px;
-      transition: 0.3s;
-    }
-    nav a:hover {
-      background-color: #00ffff;
-      color: #000;
-    }
-    section {
-      padding: 50px 20px;
-      max-width: 900px;
-      margin: 0 auto;
-    }
-    .features {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 20px;
-      justify-content: center;
-    }
-    .feature {
-      background-color: #1f1f1f;
-      border-radius: 10px;
-      padding: 20px;
-      flex: 1 1 250px;
-      text-align: center;
-      transition: transform 0.3s;
-    }
-    .feature:hover {
-      transform: translateY(-10px);
-      box-shadow: 0 0 20px rgba(0,255,255,0.5);
-    }
-    .feature h3 {
-      margin-top: 0;
-      color: #00ffff;
-    }
-    .screenshot {
-      max-width: 100%;
-      border-radius: 10px;
-      margin: 10px 0;
-      transition: transform 0.3s;
-    }
-    .screenshot:hover {
-      transform: scale(1.05);
-    }
-    .download-btn, .copy-btn {
-      display: inline-block;
-      padding: 15px 30px;
-      background: linear-gradient(45deg, #00ffff, #0088ff);
-      color: #000;
-      font-weight: bold;
-      text-decoration: none;
-      border-radius: 8px;
-      transition: 0.3s;
-      margin-top: 20px;
-      animation: pulse 2s infinite;
-      cursor: pointer;
-      border: none;
-    }
-    .download-btn:hover, .copy-btn:hover {
-      background: linear-gradient(45deg, #00b3b3, #0055ff);
-      color: #fff;
-    }
-    footer {
-      text-align: center;
-      padding: 20px;
-      background-color: #1f1f1f;
-      color: #888;
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>比赛对阵信息</title>
+<style>
+    /* 全屏画布背景 */
+    body, html {
+        margin: 0;
+        padding: 0;
+        height: 100%;
+        font-family: "Microsoft YaHei", sans-serif;
+        overflow-x: hidden;
+        color: #fff;
+        background-color: #000;
     }
 
-    /* 动画 */
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(-20px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-    @keyframes pulse {
-      0%, 100% { box-shadow: 0 0 10px #00ffff; }
-      50% { box-shadow: 0 0 30px #00ffff; }
+    canvas {
+        position: fixed;
+        top: 0;
+        left: 0;
+        z-index: -1;
     }
 
-    /* 移动端优化 */
+    h1 {
+        text-align: center;
+        color: #00f0ff;
+        text-shadow: 0 0 10px #00f0ff, 0 0 20px #00f0ff;
+    }
+
+    .group-container {
+        display: flex;
+        justify-content: space-around;
+        flex-wrap: wrap;
+        margin-top: 20px;
+    }
+
+    .group {
+        background-color: rgba(10, 10, 20, 0.7);
+        border-radius: 12px;
+        padding: 20px;
+        width: 220px;
+        box-shadow: 0 0 20px rgba(0,255,255,0.3);
+        margin-bottom: 20px;
+        backdrop-filter: blur(5px);
+        transition: transform 0.3s;
+    }
+
+    .group:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 0 30px rgba(0,255,255,0.6);
+    }
+
+    .group h2 {
+        text-align: center;
+        color: #00f0ff;
+        text-shadow: 0 0 8px #00f0ff;
+    }
+
+    .match {
+        margin: 10px 0;
+        padding: 10px;
+        border: 1px solid rgba(0,255,255,0.3);
+        border-radius: 8px;
+        background-color: rgba(0,0,0,0.5);
+        text-align: center;
+        font-weight: bold;
+        color: #fff;
+    }
+
+    .winner {
+        color: #00ff00;
+        text-shadow: 0 0 6px #00ff00;
+    }
+
+    .loser {
+        color: #ff4c4c;
+        text-shadow: 0 0 6px #ff4c4c;
+    }
+
+    .section-title {
+        margin-top: 40px;
+        text-align: center;
+        font-size: 24px;
+        color: #00f0ff;
+        text-shadow: 0 0 10px #00f0ff;
+    }
+
+    .rules {
+        max-width: 800px;
+        margin: 30px auto;
+        padding: 20px;
+        background-color: rgba(10, 10, 20, 0.7);
+        border-radius: 12px;
+        border: 1px solid rgba(0,255,255,0.3);
+        backdrop-filter: blur(5px);
+    }
+
+    .rules h3 {
+        text-align: center;
+        margin-bottom: 15px;
+        color: #00f0ff;
+    }
+
+    .rules p {
+        font-size: 16px;
+        line-height: 1.6;
+        color: #fff;
+    }
+
     @media (max-width: 600px) {
-      header h1 { font-size: 2em; }
-      nav a { padding: 10px; font-size: 14px; }
-      .features { flex-direction: column; }
+        .group {
+            width: 90%;
+        }
     }
-  </style>
+</style>
 </head>
 <body>
 
-<header>
-  <h1>我的第一个网站</h1>
-</header>
+<h1>比赛对阵信息</h1>
 
-<nav>
-  <a href="#about">关于我</a>
-  <a href="#features">我的兴趣</a>
-  <a href="#screenshots">生活照片</a>
-  <a href="#download">联系我</a>
-</nav>
-
-<section id="about">
-  <h2>关于我</h2>
-  <p>你好！这是我制作的第一个网站，用来练习网页设计与前端开发。</p>
-</section>
-
-<section id="features">
-  <h2>我的兴趣</h2>
-  <div class="features">
-    <div class="feature">
-      <h3>编程</h3>
-      <p>学习 Lua、HTML、CSS 和 JavaScript，尝试做一些小项目。</p>
+<div class="group-container">
+    <div class="group">
+        <h2>A组</h2>
+        <div class="match winner">shsnjsbajan</div>
+        <div class="match loser">connecter1234</div>
     </div>
-    <div class="feature">
-      <h3>游戏</h3>
-      <p>喜欢 Roblox、Minecraft 等沙盒类游戏。</p>
+    <div class="group">
+        <h2>B组</h2>
+        <div class="match winner">woailujb91781369</div>
+        <div class="match loser">qwer_en</div>
     </div>
-    <div class="feature">
-      <h3>创作</h3>
-      <p>写代码、做图、分享想法，让我的灵感实现出来。</p>
+    <div class="group">
+        <h2>C组</h2>
+        <div class="match">cx_001wc vs Neonbla8741</div>
     </div>
-  </div>
-</section>
+    <div class="group">
+        <h2>D组</h2>
+        <div class="match">Arpss0 vs kssihdbssn</div>
+    </div>
+    <div class="group">
+        <h2>E组</h2>
+        <div class="match">jvjvbc520 vs qwqwqwqe97</div>
+    </div>
+</div>
 
-<section id="screenshots">
-  <h2>生活照片</h2>
-  <img src="https://picsum.photos/600/400?random=1" alt="照片1" class="screenshot">
-  <img src="https://picsum.photos/600/400?random=2" alt="照片2" class="screenshot">
-  <img src="https://picsum.photos/600/400?random=3" alt="照片3" class="screenshot">
-  <!-- GitHub 图片示例 -->
-  <img src="https://raw.githubusercontent.com/wsomoQaz/CX/wsomoQaz-patch-1/image_download_1754786373592.jpg" alt="截图4" class="screenshot">
-<img src="https://raw.githubusercontent.com/wsomoQaz/CX/main/rspy.jpg" alt="照片5" class="screenshot">
-</section>
+<div class="section-title">胜者组</div>
+<div class="group-container">
+    <div class="group">
+        <div class="match winner">shsnjsbajan</div>
+        <div class="match winner">woailujb91781369</div>
+    </div>
+</div>
 
-<section id="download">
-  <h2>联系我</h2>
-  <a href="mailto:yourenxiaoxing@qq.com" class="download-btn">📧 给我发邮件</a>
+<div class="section-title">败者组</div>
+<div class="group-container">
+    <div class="group">
+        <div class="match loser">connecter1234</div>
+        <div class="match loser">qwer_en</div>
+    </div>
+</div>
 
-  <!-- 显示邮箱 -->
-  <p style="margin-top:15px; font-size:18px; color:#00ffff;">
-    我的邮箱：<span id="email">yourenxiaoxing@qq.com</span>
-  </p>
+<div class="rules">
+    <h3>比赛规则说明</h3>
+    <p>1. 每一组（A~E组）先进行对战，胜利者进入胜者组，失败者进入败者组。</p>
+    <p>2. 胜者组进行晋级赛，对胜者组的玩家进行对战，胜者可继续晋级到下一轮。</p>
+    <p>3. 败者组进行淘汰赛，对败者组的玩家进行对战，失败者将被淘汰出比赛。</p>
+    <p>4. 最终胜者组冠军与败者组最后幸存者进行决赛，决出总冠军。</p>
+    <p>5. 所有对战结果将实时更新在网页上，绿色表示胜利，红色表示失败。</p>
+</div>
 
-  <!-- 复制按钮 -->
-  <button onclick="copyEmail()" class="copy-btn">📋 复制邮箱</button>
+<!-- 黑色科幻动态粒子背景 -->
+<canvas id="bg"></canvas>
+<script>
+const canvas = document.getElementById('bg');
+const ctx = canvas.getContext('2d');
+let width = canvas.width = window.innerWidth;
+let height = canvas.height = window.innerHeight;
 
-  <script>
-    function copyEmail() {
-      const email = document.getElementById("email").textContent;
-      navigator.clipboard.writeText(email).then(() => {
-        alert("邮箱已复制: " + email);
-      });
+window.addEventListener('resize', () => {
+    width = canvas.width = window.innerWidth;
+    height = canvas.height = window.innerHeight;
+});
+
+// 粒子
+const particles = [];
+const numParticles = 150;
+
+for (let i = 0; i < numParticles; i++) {
+    particles.push({
+        x: Math.random() * width,
+        y: Math.random() * height,
+        radius: Math.random() * 2 + 1,
+        dx: (Math.random() - 0.5) * 1,
+        dy: (Math.random() - 0.5) * 1,
+        color: `rgba(0,255,255,${Math.random()*0.5 + 0.3})`
+    });
+}
+
+function animate() {
+    ctx.fillStyle = 'rgba(0,0,0,0.3)';
+    ctx.fillRect(0,0,width,height);
+
+    particles.forEach(p => {
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, p.radius, 0, Math.PI*2);
+        ctx.fillStyle = p.color;
+        ctx.fill();
+
+        p.x += p.dx;
+        p.y += p.dy;
+
+        if(p.x < 0 || p.x > width) p.dx *= -1;
+        if(p.y < 0 || p.y > height) p.dy *= -1;
+    });
+
+    // 粒子连线
+    for(let i=0;i<numParticles;i++){
+        for(let j=i+1;j<numParticles;j++){
+            const dx = particles[i].x - particles[j].x;
+            const dy = particles[i].y - particles[j].y;
+            const dist = Math.sqrt(dx*dx + dy*dy);
+            if(dist < 120){
+                ctx.strokeStyle = `rgba(0,255,255,${1-dist/120})`;
+                ctx.lineWidth = 0.7;
+                ctx.beginPath();
+                ctx.moveTo(particles[i].x, particles[i].y);
+                ctx.lineTo(particles[j].x, particles[j].y);
+                ctx.stroke();
+            }
+        }
     }
-  </script>
-</section>
 
-<footer>
-  &copy; 2025 我的第一个网站 | 自豪地用 HTML + CSS 制作
-</footer>
+    requestAnimationFrame(animate);
+}
+
+animate();
+</script>
 
 </body>
 </html>
