@@ -5,7 +5,6 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>比赛对阵信息</title>
 <style>
-    /* 全屏画布背景 */
     body, html {
         margin: 0;
         padding: 0;
@@ -26,7 +25,8 @@
     h1 {
         text-align: center;
         color: #00f0ff;
-        text-shadow: 0 0 10px #00f0ff, 0 0 20px #00f0ff;
+        text-shadow: 0 0 15px #00f0ff, 0 0 30px #00f0ff;
+        letter-spacing: 2px;
     }
 
     .group-container {
@@ -44,18 +44,18 @@
         box-shadow: 0 0 20px rgba(0,255,255,0.3);
         margin-bottom: 20px;
         backdrop-filter: blur(5px);
-        transition: transform 0.3s;
+        transition: transform 0.3s, box-shadow 0.3s;
     }
 
     .group:hover {
-        transform: translateY(-5px);
+        transform: translateY(-6px);
         box-shadow: 0 0 30px rgba(0,255,255,0.6);
     }
 
     .group h2 {
         text-align: center;
         color: #00f0ff;
-        text-shadow: 0 0 8px #00f0ff;
+        text-shadow: 0 0 10px #00f0ff;
     }
 
     .match {
@@ -63,20 +63,20 @@
         padding: 10px;
         border: 1px solid rgba(0,255,255,0.3);
         border-radius: 8px;
-        background-color: rgba(0,0,0,0.5);
+        background-color: rgba(0,0,0,0.6);
         text-align: center;
         font-weight: bold;
         color: #fff;
     }
 
     .winner {
-        color: #00ff00;
-        text-shadow: 0 0 6px #00ff00;
+        color: #00ff88;
+        text-shadow: 0 0 8px #00ff88;
     }
 
     .loser {
         color: #ff4c4c;
-        text-shadow: 0 0 6px #ff4c4c;
+        text-shadow: 0 0 8px #ff4c4c;
     }
 
     .section-title {
@@ -84,28 +84,31 @@
         text-align: center;
         font-size: 24px;
         color: #00f0ff;
-        text-shadow: 0 0 10px #00f0ff;
+        text-shadow: 0 0 15px #00f0ff;
+        letter-spacing: 1px;
     }
 
     .rules {
         max-width: 800px;
-        margin: 30px auto;
+        margin: 40px auto;
         padding: 20px;
         background-color: rgba(10, 10, 20, 0.7);
         border-radius: 12px;
         border: 1px solid rgba(0,255,255,0.3);
         backdrop-filter: blur(5px);
+        box-shadow: 0 0 25px rgba(0,255,255,0.3);
     }
 
     .rules h3 {
         text-align: center;
         margin-bottom: 15px;
         color: #00f0ff;
+        text-shadow: 0 0 10px #00f0ff;
     }
 
     .rules p {
         font-size: 16px;
-        line-height: 1.6;
+        line-height: 1.8;
         color: #fff;
     }
 
@@ -118,7 +121,7 @@
 </head>
 <body>
 
-<h1>比赛对阵信息</h1>
+<h1>⚡ 比赛对阵信息 ⚡</h1>
 
 <div class="group-container">
     <div class="group">
@@ -153,31 +156,25 @@
     </div>
 </div>
 
-<div class="match winner">kssihdbssn</div>
-    </div>
-</div>
-
 <div class="section-title">败者组</div>
 <div class="group-container">
     <div class="group">
         <div class="match loser">connecter1234</div>
         <div class="match loser">qwer_en</div>
-    </div>
-</div>
-<div class="match loser">Arpss0</div>
+        <div class="match loser">Arpss0</div>
     </div>
 </div>
 
 <div class="rules">
     <h3>比赛规则说明</h3>
-    <p>1. 每一组（A~E组）先进行对战，胜利者进入胜者组，失败者进入败者组。</p>
-    <p>2. 胜者组进行晋级赛，对胜者组的玩家进行对战，胜者可继续晋级到下一轮。</p>
-    <p>3. 败者组进行淘汰赛，对败者组的玩家进行对战，失败者将被淘汰出比赛。</p>
-    <p>4. 最终胜者组冠军与败者组最后幸存者进行决赛，决出总冠军。</p>
-    <p>5. 所有对战结果将实时更新在网页上，绿色表示胜利，红色表示失败。</p>
+    <p>1️⃣ 每一组（A~E组）进行对战，胜者进入胜者组，败者进入败者组。</p>
+    <p>2️⃣ 胜者组进行晋级赛，胜利者继续晋级下一轮。</p>
+    <p>3️⃣ 败者组进行淘汰赛，失败者将被淘汰出局。</p>
+    <p>4️⃣ 最终胜者组冠军与败者组胜者进行决赛，决出最终冠军！</p>
+    <p>5️⃣ 绿色为胜者 🔥 红色为败者 ❌</p>
 </div>
 
-<!-- 黑色科幻动态粒子背景 -->
+<!-- ✨ 黑色科幻动态粒子背景 -->
 <canvas id="bg"></canvas>
 <script>
 const canvas = document.getElementById('bg');
@@ -190,7 +187,6 @@ window.addEventListener('resize', () => {
     height = canvas.height = window.innerHeight;
 });
 
-// 粒子
 const particles = [];
 const numParticles = 150;
 
@@ -199,38 +195,37 @@ for (let i = 0; i < numParticles; i++) {
         x: Math.random() * width,
         y: Math.random() * height,
         radius: Math.random() * 2 + 1,
-        dx: (Math.random() - 0.5) * 1,
-        dy: (Math.random() - 0.5) * 1,
-        color: `rgba(0,255,255,${Math.random()*0.5 + 0.3})`
+        dx: (Math.random() - 0.5) * 0.8,
+        dy: (Math.random() - 0.5) * 0.8,
+        color: `rgba(0,255,255,${Math.random() * 0.5 + 0.3})`
     });
 }
 
 function animate() {
-    ctx.fillStyle = 'rgba(0,0,0,0.3)';
-    ctx.fillRect(0,0,width,height);
+    ctx.fillStyle = 'rgba(0,0,0,0.25)';
+    ctx.fillRect(0, 0, width, height);
 
     particles.forEach(p => {
         ctx.beginPath();
-        ctx.arc(p.x, p.y, p.radius, 0, Math.PI*2);
+        ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
         ctx.fillStyle = p.color;
         ctx.fill();
 
         p.x += p.dx;
         p.y += p.dy;
 
-        if(p.x < 0 || p.x > width) p.dx *= -1;
-        if(p.y < 0 || p.y > height) p.dy *= -1;
+        if (p.x < 0 || p.x > width) p.dx *= -1;
+        if (p.y < 0 || p.y > height) p.dy *= -1;
     });
 
-    // 粒子连线
-    for(let i=0;i<numParticles;i++){
-        for(let j=i+1;j<numParticles;j++){
+    for (let i = 0; i < numParticles; i++) {
+        for (let j = i + 1; j < numParticles; j++) {
             const dx = particles[i].x - particles[j].x;
             const dy = particles[i].y - particles[j].y;
-            const dist = Math.sqrt(dx*dx + dy*dy);
-            if(dist < 120){
-                ctx.strokeStyle = `rgba(0,255,255,${1-dist/120})`;
-                ctx.lineWidth = 0.7;
+            const dist = Math.sqrt(dx * dx + dy * dy);
+            if (dist < 120) {
+                ctx.strokeStyle = `rgba(0,255,255,${1 - dist / 120})`;
+                ctx.lineWidth = 0.6;
                 ctx.beginPath();
                 ctx.moveTo(particles[i].x, particles[i].y);
                 ctx.lineTo(particles[j].x, particles[j].y);
